@@ -68,7 +68,7 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <NotificationListener />
           <Navbar />
-          <main className="max-h-[90vh] max-w-screen relative sm:top-[79px] top-[60px]">
+          <main className="max-w-screen relative sm:top-[79px] top-[60px] overflow-x-hidden">
             {children}
           </main>
           <ToastContainer />
