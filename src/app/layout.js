@@ -1,10 +1,13 @@
 import "./globals.css";
+import { Inter } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NotificationListener from "@/components/NotificationListener";
 
 import { AuthProvider } from "@/context/AuthContext";
+
+const inter = Inter({ subsets: ["latin"], display: "swap" });
 
 export const metadata = {
   title: "CTF | AdVitya 2026",
@@ -64,7 +67,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="">
+      <body className={inter.className}>
         <AuthProvider>
           <NotificationListener />
           <Navbar />

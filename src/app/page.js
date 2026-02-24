@@ -30,7 +30,7 @@ import {
    UTILITY COMPONENTS
    ══════════════════════════════════════════════ */
 
-/* ── Scroll-triggered reveal (motion.dev scroll-triggered style) ── */
+/* ── Scroll-triggered reveal ── */
 function Reveal({ children, className = "", delay = 0, direction = "up" }) {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
@@ -63,7 +63,7 @@ function Reveal({ children, className = "", delay = 0, direction = "up" }) {
   );
 }
 
-/* ── Animated border trail card (animata.design inspired) ── */
+/* ── Animated border trail card ── */
 function TrailCard({ children, className = "", duration = "6s" }) {
   return (
     <div className={`relative overflow-hidden rounded-2xl p-px ${className}`}>
@@ -71,7 +71,7 @@ function TrailCard({ children, className = "", duration = "6s" }) {
         className="absolute inset-0 animate-trail"
         style={{
           "--duration": duration,
-          background: "conic-gradient(from var(--angle, 0deg) at 50% 50%, transparent 85%, #a855f7)",
+          background: "conic-gradient(from var(--angle, 0deg) at 50% 50%, transparent 85%, rgba(255,255,255,0.5))",
         }}
       />
       <div className="relative h-full w-full rounded-[15px] bg-[#0f0f13] overflow-hidden">
@@ -81,7 +81,7 @@ function TrailCard({ children, className = "", duration = "6s" }) {
   );
 }
 
-/* ── Matrix code rain (minimal, purple-only) ── */
+/* ── Matrix code rain (white/grey) ── */
 function MatrixRain() {
   const canvasRef = useRef(null);
 
@@ -110,8 +110,8 @@ function MatrixRain() {
 
       for (let i = 0; i < drops.length; i++) {
         const char = chars[Math.floor(Math.random() * chars.length)];
-        const alpha = (Math.random() * 0.15 + 0.05).toFixed(2);
-        ctx.fillStyle = `rgba(168, 85, 247, ${alpha})`;
+        const alpha = (Math.random() * 0.12 + 0.03).toFixed(2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
         ctx.fillText(char, i * fontSize, drops[i] * fontSize);
 
         if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
@@ -133,19 +133,37 @@ function MatrixRain() {
     <canvas
       ref={canvasRef}
       className="absolute inset-0 pointer-events-none z-0"
-      style={{ opacity: 0.5 }}
+      style={{ opacity: 0.4 }}
     />
   );
 }
 
 /* ── Countdown timer ── */
+const START_TIME = new Date("2026-02-27T10:00:00+05:30").getTime();
+const END_TIME = new Date("2026-02-27T16:00:00+05:30").getTime();
+
 function CountdownTimer() {
-  const target = new Date("2026-02-27T10:00:00+05:30").getTime();
   const [timeLeft, setTimeLeft] = useState({ d: 0, h: 0, m: 0, s: 0 });
+  const [status, setStatus] = useState("upcoming"); // "upcoming" | "active" | "ended"
 
   useEffect(() => {
     const tick = () => {
-      const diff = Math.max(0, target - Date.now());
+      const now = Date.now();
+      let target;
+
+      if (now < START_TIME) {
+        setStatus("upcoming");
+        target = START_TIME;
+      } else if (now < END_TIME) {
+        setStatus("active");
+        target = END_TIME;
+      } else {
+        setStatus("ended");
+        setTimeLeft({ d: 0, h: 0, m: 0, s: 0 });
+        return;
+      }
+
+      const diff = Math.max(0, target - now);
       setTimeLeft({
         d: Math.floor(diff / 86400000),
         h: Math.floor((diff % 86400000) / 3600000),
@@ -153,10 +171,11 @@ function CountdownTimer() {
         s: Math.floor((diff % 60000) / 1000),
       });
     };
+
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, [target]);
+  }, []);
 
   const units = [
     { label: "Days", val: timeLeft.d },
@@ -166,27 +185,32 @@ function CountdownTimer() {
   ];
 
   return (
-    <div className="flex items-center justify-center gap-3 sm:gap-4">
-      {units.map((u, i) => (
-        <div key={u.label} className="flex items-center gap-3 sm:gap-4">
-          <div className="flex flex-col items-center">
-            <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl border border-purple-500/20 bg-white/[0.02] backdrop-blur-sm flex items-center justify-center overflow-hidden group">
-              {/* subtle glow */}
-              <div className="absolute inset-0 bg-gradient-to-b from-purple-500/5 to-transparent" />
-              <span className="relative text-2xl sm:text-3xl font-mono font-black text-purple-400 tabular-nums">
-                {String(u.val).padStart(2, "0")}
-              </span>
-              <div className="absolute inset-x-0 top-1/2 h-px bg-white/5" />
+    <div className="flex flex-col text-left">
+      <p className="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-bold mb-4">
+        {status === "upcoming" ? "CTF BEGINS IN" : status === "active" ? "TIME LEFT" : "CTF HAS ENDED"}
+      </p>
+      <div className="flex items-center gap-2 sm:gap-4">
+        {units.map((u, i) => (
+          <div key={u.label + status} className="flex flex-col items-center">
+            <div className="flex items-center gap-2 sm:gap-4">
+              <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-2xl bg-[#111113] border border-white/5 flex items-center justify-center shadow-inner group">
+                <span className="text-xl sm:text-3xl font-black text-white tracking-widest tabular-nums">
+                  {String(u.val).padStart(2, "0")}
+                </span>
+              </div>
+              {i < 3 && (
+                <div className="flex flex-col gap-1.5 opacity-30 px-1">
+                  <div className="w-1 h-1 rounded-full bg-white" />
+                  <div className="w-1 h-1 rounded-full bg-white" />
+                </div>
+              )}
             </div>
-            <span className="text-[10px] uppercase tracking-widest text-gray-600 mt-1.5 font-medium">
+            <span className="text-[9px] sm:text-[10px] uppercase tracking-widest text-gray-500 mt-3 font-semibold mr-auto sm:ml-2">
               {u.label}
             </span>
           </div>
-          {i < 3 && (
-            <span className="text-lg font-bold text-purple-500/40 animate-pulse mb-5">:</span>
-          )}
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }
@@ -227,30 +251,30 @@ function TypingTerminal() {
   const typingText = currentLine.slice(0, charIdx);
 
   const lineColor = (l) =>
-    l.startsWith("4DV1TY426{") ? "text-purple-400 font-bold" :
-      l.startsWith("[") ? "text-purple-300/70" : "text-gray-500";
+    l.startsWith("4DV1TY426{") ? "text-green-400 font-bold" :
+      l.startsWith("[") ? "text-gray-400" : "text-gray-500";
 
   return (
-    <TrailCard className="max-w-lg mx-auto" duration="8s">
-      <div className="text-left">
+    <TrailCard className="w-[320px] sm:w-[400px] md:w-[480px] mx-auto" duration="8s">
+      <div className="text-left flex flex-col h-[260px]">
         {/* title bar */}
-        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/5 bg-white/[0.01]">
-          <div className="w-2.5 h-2.5 rounded-full bg-gray-600" />
-          <div className="w-2.5 h-2.5 rounded-full bg-gray-600" />
-          <div className="w-2.5 h-2.5 rounded-full bg-gray-600" />
-          <span className="ml-2 text-[11px] text-gray-600 font-mono flex items-center gap-1.5">
+        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/5 bg-[#121215]">
+          <div className="w-3 h-3 rounded-full bg-red-500/80" />
+          <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+          <div className="w-3 h-3 rounded-full bg-green-500/80" />
+          <span className="ml-2 text-[11px] text-gray-500 font-mono flex items-center gap-1.5">
             <Terminal className="w-3 h-3" /> cyber-carnival ~ /ctf
           </span>
         </div>
         {/* output */}
-        <div className="p-4 font-mono text-xs sm:text-sm leading-relaxed h-[180px] overflow-hidden">
+        <div className="p-5 font-mono text-xs sm:text-sm leading-relaxed flex-1 bg-[#0a0a0c]">
           {displayLines.map((line, i) => (
             <div key={i} className={lineColor(line)}>{line}</div>
           ))}
           {lineIdx < terminalLines.length && (
             <div className={lineColor(currentLine)}>
               {typingText}
-              <span className="inline-block w-2 h-4 bg-purple-500 ml-0.5 animate-pulse rounded-sm" />
+              <span className="inline-block w-2 h-4 bg-white/70 ml-0.5 animate-pulse rounded-sm align-middle" />
             </div>
           )}
         </div>
@@ -259,7 +283,7 @@ function TypingTerminal() {
   );
 }
 
-/* ── 3D Tilt Card (motion.dev hover style) ── */
+/* ── 3D Tilt Card ── */
 function TiltCard({ children, className = "" }) {
   const ref = useRef(null);
 
@@ -283,7 +307,7 @@ function TiltCard({ children, className = "" }) {
   );
 }
 
-/* ── Custom cursor (crosshair dot + trailing ring) ── */
+/* ── Custom cursor (white) ── */
 function CustomCursor() {
   const dotRef = useRef(null);
   const ringRef = useRef(null);
@@ -293,7 +317,6 @@ function CustomCursor() {
   const raf = useRef(null);
 
   useEffect(() => {
-    // Check for touch device
     if (typeof window !== "undefined" && window.matchMedia("(hover: none)").matches) return;
 
     const onMove = (e) => {
@@ -345,182 +368,6 @@ function CustomCursor() {
   );
 }
 
-/* ── Slice-to-reveal intro (pirate slash) ── */
-function SliceIntro({ onComplete }) {
-  const containerRef = useRef(null);
-  const [progress, setProgress] = useState(0);        // 0..1
-  const [isDragging, setIsDragging] = useState(false);
-  const [done, setDone] = useState(false);
-  const [sparks, setSparks] = useState([]);
-  const startY = useRef(0);
-  const sparkId = useRef(0);
-
-  const threshold = 180; // px drag to complete
-
-  const spawnSparks = useCallback((y) => {
-    const cx = typeof window !== "undefined" ? window.innerWidth / 2 : 500;
-    const newSparks = Array.from({ length: 6 }, () => {
-      sparkId.current += 1;
-      return {
-        id: sparkId.current,
-        x: cx + (Math.random() - 0.5) * 30,
-        y: y,
-        sx: `${(Math.random() - 0.5) * 120}px`,
-        sy: `${(Math.random() - 0.5) * 120}px`,
-      };
-    });
-    setSparks((prev) => [...prev.slice(-30), ...newSparks]);
-  }, []);
-
-  const handleStart = useCallback((clientY) => {
-    setIsDragging(true);
-    startY.current = clientY;
-  }, []);
-
-  const handleMove = useCallback((clientY) => {
-    if (!isDragging || done) return;
-    const dist = Math.abs(clientY - startY.current);
-    const p = Math.min(1, dist / threshold);
-    setProgress(p);
-    if (dist % 12 < 4) spawnSparks(clientY);
-    if (p >= 1) {
-      setDone(true);
-      setTimeout(() => onComplete(), 700);
-    }
-  }, [isDragging, done, onComplete, spawnSparks]);
-
-  const handleEnd = useCallback(() => {
-    if (!done && progress < 1) {
-      setIsDragging(false);
-      setProgress(0);
-    }
-  }, [done, progress]);
-
-  // Mouse events
-  const onMouseDown = (e) => handleStart(e.clientY);
-  const onMouseMove = (e) => handleMove(e.clientY);
-  const onMouseUp = () => handleEnd();
-
-  // Touch events
-  const onTouchStart = (e) => handleStart(e.touches[0].clientY);
-  const onTouchMove = (e) => handleMove(e.touches[0].clientY);
-  const onTouchEnd = () => handleEnd();
-
-  const splitOffset = done ? 100 : progress * 12;
-
-  return (
-    <div
-      ref={containerRef}
-      className="fixed inset-0 z-[9998] select-none"
-      onMouseDown={onMouseDown}
-      onMouseMove={onMouseMove}
-      onMouseUp={onMouseUp}
-      onMouseLeave={onMouseUp}
-      onTouchStart={onTouchStart}
-      onTouchMove={onTouchMove}
-      onTouchEnd={onTouchEnd}
-      style={{
-        pointerEvents: done ? "none" : "auto",
-        opacity: done ? 0 : 1,
-        transition: done ? "opacity 0.6s ease" : "none",
-      }}
-    >
-      {/* Left half */}
-      <div
-        className="absolute top-0 left-0 w-1/2 h-full bg-[#09090b] flex items-center justify-end overflow-hidden"
-        style={{
-          transform: `translateX(-${splitOffset}%)`,
-          transition: done ? "transform 0.7s cubic-bezier(0.65,0,0.35,1)" : "transform 0.05s ease-out",
-        }}
-      >
-        <div className="text-right pr-8 sm:pr-16">
-          <pre className="text-purple-500/40 text-[8px] sm:text-xs font-mono leading-tight mb-4 hidden sm:block select-none" style={{ animation: "intro-text-flicker 3s infinite" }}>{`
-    ▄▄▄▄▄▄▄ 
-   ▐░░░░░░░▌
-   ▐░▄▄▄░▄▄▄ 
-   ▐░▌   ▐░▌
-   ▐░▌   ▐░▌
-   ▐░▌   ▐░▌
-    ▀▀▀▀▀▀▀ 
-          `}</pre>
-          <p className="text-gray-600 text-xs sm:text-sm font-mono tracking-wider uppercase">
-            System locked
-          </p>
-        </div>
-      </div>
-
-      {/* Right half */}
-      <div
-        className="absolute top-0 right-0 w-1/2 h-full bg-[#09090b] flex items-center justify-start overflow-hidden"
-        style={{
-          transform: `translateX(${splitOffset}%)`,
-          transition: done ? "transform 0.7s cubic-bezier(0.65,0,0.35,1)" : "transform 0.05s ease-out",
-        }}
-      >
-        <div className="text-left pl-8 sm:pl-16">
-          <p className="text-gray-600 text-xs sm:text-sm font-mono tracking-wider uppercase">
-            Breach required
-          </p>
-        </div>
-      </div>
-
-      {/* Center glow line */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[2px] h-full pointer-events-none z-10">
-        <div
-          className="w-full h-full"
-          style={{
-            background: `linear-gradient(to bottom, transparent 10%, rgba(168,85,247,${0.2 + progress * 0.6}) 30%, rgba(168,85,247,${0.3 + progress * 0.7}) 50%, rgba(168,85,247,${0.2 + progress * 0.6}) 70%, transparent 90%)`,
-            boxShadow: `0 0 ${10 + progress * 25}px rgba(168,85,247,${0.3 + progress * 0.5}), 0 0 ${20 + progress * 40}px rgba(168,85,247,${0.15 + progress * 0.3})`,
-            transition: "all 0.1s ease",
-          }}
-        />
-      </div>
-
-      {/* Center content */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-20">
-        <h2
-          className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tighter mb-2 text-center"
-          style={{
-            animation: "intro-text-flicker 3s infinite",
-            opacity: 1 - progress,
-            transition: "opacity 0.15s ease",
-          }}
-        >
-          <span className="text-gray-400">BREACH</span>{" "}
-          <span className="text-purple-500">THE SYSTEM</span>
-        </h2>
-        <p
-          className="text-gray-600 text-xs sm:text-sm font-mono tracking-widest uppercase drag-hint"
-          style={{ opacity: Math.max(0, 1 - progress * 2) }}
-        >
-          ↕ drag to slash
-        </p>
-
-        {/* progress ring */}
-        <svg className="mt-6" width="48" height="48" viewBox="0 0 48 48" style={{ opacity: progress > 0.05 ? 1 : 0, transition: "opacity 0.2s" }}>
-          <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(168,85,247,0.15)" strokeWidth="2" />
-          <circle
-            cx="24" cy="24" r="20" fill="none" stroke="#a855f7" strokeWidth="2"
-            strokeDasharray={`${progress * 125.6} 125.6`}
-            strokeLinecap="round"
-            transform="rotate(-90 24 24)"
-            style={{ transition: "stroke-dasharray 0.1s ease" }}
-          />
-        </svg>
-      </div>
-
-      {/* Sparks */}
-      {sparks.map((s) => (
-        <div
-          key={s.id}
-          className="spark"
-          style={{ left: s.x, top: s.y, "--sx": s.sx, "--sy": s.sy }}
-        />
-      ))}
-    </div>
-  );
-}
-
 /* ── Hidden flag easter egg ── */
 function HiddenFlag() {
   const [found, setFound] = useState(false);
@@ -531,8 +378,8 @@ function HiddenFlag() {
     <span className="relative inline-block">
       <span onClick={handleClick} className="cursor-pointer select-none" title={found ? "Flag found!" : "..."} role="button" tabIndex={0}>💀</span>
       {found && (
-        <span className="absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap glass-card px-3 py-1 border border-purple-500/30 rounded-lg animate-fadeInUp z-50">
-          <span className="font-mono text-xs text-purple-400 font-bold">{"CTF{y0u_f0und_th3_34st3r_3gg}"}</span>
+        <span className="absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap glass-card px-3 py-1 border border-white/20 rounded-lg animate-fadeInUp z-50">
+          <span className="font-mono text-xs text-green-400 font-bold">{"CTF{y0u_f0und_th3_34st3r_3gg}"}</span>
         </span>
       )}
     </span>
@@ -560,36 +407,87 @@ const events = [
   { title: "Hackathon — Phase 3: The Showdown", date: "Feb 27, 2026", desc: "Final presentations and judgment. Winners get an exclusive internship opportunity!" },
 ];
 
-/* ── Team data (placeholders — you'll fill these in) ── */
+const clubLinks = [
+  { name: "OWASP Chapter VITB", href: "https://instagram.com/owaspvitbhopal" },
+  { name: "Null Student Chapter VITB", href: "https://instagram.com/null_vitbhopal" },
+  { name: "K.A.V.A.C.H", href: "https://instagram.com/kavach_vitb" },
+  { name: "WiCys VIT Bhopal", href: "https://instagram.com/wicys_vitbhopal" },
+  { name: "Cyber Warriors Club", href: "https://instagram.com/cyberwarriors_vitb" },
+];
+
+/* ── Team data ── */
 const challengeDevs = [
-  { name: "Developer 1", link: "#" },
-  { name: "Developer 2", link: "#" },
-  { name: "Developer 3", link: "#" },
-  { name: "Developer 4", link: "#" },
-  { name: "Developer 5", link: "#" },
-  { name: "Developer 6", link: "#" },
+  { name: "0xcafebabe", link: "https://www.linkedin.com/in/das-somnath/", tags: ["REV", "BIN", "CRYPTO"] },
+  { name: "mindxflayer", link: "#", tags: ["OSINT", "AI/ML"] },
+  { name: "wrongmanoff", link: "https://github.com/wrongmanoff", tags: ["REVERSE", "OSINT"] },
+  { name: "pphreak_1001", link: "#", tags: ["WEB", "OSINT"] },
+  { name: "Headbanger", link: "https://www.srbh.site/", tags: ["WEB", "OSINT"] },
+  { name: "craycray", link: "https://www.linkedin.com/in/akshat-singh-1311ca/", tags: ["CRYPTO", "REVERSE", "DFIR"] },
+  { name: "H34D_L355_", link: "https://github.com/DhyaanKanoja11", tags: ["WEB", "OSINT"] },
+  { name: "rootk3", link: "https://github.com/rootk3c", tags: ["WEB"] },
+  { name: "AnkitS01", link: "https://linkedin.com/in/ankit-s01", tags: ["CRYPTO"] },
+  { name: "Ahundred21", link: "https://github.com/saimerit", tags: ["CRYPTO", "REVERSE"] },
+  { name: "Mr0x00", link: "https://www.linkedin.com/in/snehilshourya101", tags: ["DFIR", "OSINT"] },
+  { name: "0verla1n", link: "#", tags: ["REVERSE", "OSINT"] },
+  { name: "cr00k5", link: "https://www.linkedin.com/in/jayanth-renganathan-a08288280/", tags: ["CRYPTO", "OSINT"] },
+  { name: "s0suk3", link: "https://github.com/s0suk3", tags: ["WEB"] },
+  { name: "0xNiazi", link: "https://www.linkedin.com/in/0xniazi", tags: ["REVERSE"] },
+  { name: "Codezy", link: "https://www.linkedin.com/in/samridhi-tyagi-554463324", tags: ["WEB"] },
+  { name: "TRAPZI", link: "https://www.linkedin.com/in/shatabdi-singh-736ba2360", tags: ["WEB"] },
+  { name: "drizzlehx", link: "https://www.linkedin.com/in/0xutkarsh", tags: ["WEB"] },
+  { name: "Akriti", link: "https://www.linkedin.com/in/akriti-sharma-14259b284/", tags: ["DFIR"] },
+  { name: "NishKov", link: "https://www.linkedin.com/in/nishant-kumar-choudhary-516872287?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app", tags: ["DFIR"] },
+  { name: "Cyberdev007", link: "https://github.com/Devanarayananb", tags: ["WEB"] },
 ];
 
 const webDevs = [
-  { name: "Developer 1", link: "#" },
-  { name: "Developer 2", link: "#" },
-  { name: "Developer 3", link: "#" },
-  { name: "Developer 4", link: "#" },
+  { name: "Par1n1ta", link: "https://www.linkedin.com/in/parinita-piplewar/", tags: ["Frontend", "Notifications"] },
+  { name: "AnkitS01", link: "https://linkedin.com/in/ankit-s01", tags: ["Frontend", "Home Page"] },
+  { name: "Snow", link: "https://www.linkedin.com/in/shital-das-537014326", tags: ["Frontend", "Rules Page"] },
 ];
+
+/* ══════════════════════════════════════════════
+   TEAM MEMBER CARD
+   ══════════════════════════════════════════════ */
+function TeamMemberCard({ dev, delay }) {
+  return (
+    <Reveal delay={delay}>
+      <a
+        href={dev.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block p-4 rounded-xl border border-white/[0.06] bg-white/[0.02] group hover:border-white/20 hover:bg-white/[0.04] transition-all duration-300"
+      >
+        <div className="flex items-center gap-2 mb-2.5">
+          <p className="text-sm font-semibold text-gray-200 group-hover:text-white transition-colors truncate">
+            {dev.name}
+          </p>
+          <ExternalLink className="w-3 h-3 flex-shrink-0 text-gray-700 group-hover:text-gray-400 transition-colors" />
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {dev.tags.map((tag) => (
+            <span
+              key={tag}
+              className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-white/[0.06] text-gray-500 border border-white/[0.06]"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      </a>
+    </Reveal>
+  );
+}
 
 /* ══════════════════════════════════════════════
    MAIN PAGE
    ══════════════════════════════════════════════ */
 export default function CyberCarnivalHome() {
   const [mounted, setMounted] = useState(false);
-  const [introDone, setIntroDone] = useState(false);
   useEffect(() => setMounted(true), []);
 
   return (
     <div className={`min-h-screen bg-[#09090b] text-white overflow-x-hidden ${mounted ? "custom-cursor-area" : ""}`}>
-
-      {/* ── Slice-to-reveal intro ── */}
-      {mounted && !introDone && <SliceIntro onComplete={() => setIntroDone(true)} />}
 
       {/* ── Custom cursor ── */}
       {mounted && <CustomCursor />}
@@ -599,82 +497,86 @@ export default function CyberCarnivalHome() {
         <div className="absolute inset-0 scan-line pointer-events-none z-[1]" />
         {mounted && <MatrixRain />}
 
-        {/* radial glow — purple only */}
+        {/* radial glow — subtle white */}
         <div className="absolute inset-0 pointer-events-none z-[1]" style={{
-          background: "radial-gradient(ellipse 60% 50% at 50% 40%, rgba(168,85,247,0.08) 0%, transparent 70%)",
+          background: "radial-gradient(ellipse 60% 50% at 50% 40%, rgba(255,255,255,0.04) 0%, transparent 70%)",
         }} />
 
-        <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
-          {/* badge */}
-          <Reveal delay={0}>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-purple-500/20 bg-purple-500/5 text-purple-300 text-xs font-semibold tracking-widest uppercase mb-8 backdrop-blur-sm">
-              <Sparkles className="w-3.5 h-3.5" />
-              AdVitya 2026 • Capture The Flag
+        <div className="relative z-10 px-6 sm:px-10 lg:px-16 max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between min-h-[85vh] gap-12 pt-24 lg:pt-0">
+          {/* Left Column: Text & CTAs */}
+          <div className="flex-1 text-left max-w-2xl">
+            {/* badge */}
+            <Reveal delay={0}>
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.03] text-gray-300 text-xs font-semibold tracking-widest uppercase mb-10 backdrop-blur-sm">
+                <Sparkles className="w-3.5 h-3.5" />
+                AdVitya 2026 • Capture The Flag
+              </div>
+            </Reveal>
+
+            {/* title */}
+            <Reveal delay={100}>
+              <h1 className="text-5xl sm:text-6xl md:text-8xl font-black leading-[1.0] mb-8 tracking-tighter uppercase font-mono">
+                <span className="block text-gray-400" style={{ "fontFamily": "impact, sans-serif", "letterSpacing": "1px" }}>WELCOME TO</span>
+                <span className="block text-white mt-2" style={{ "fontFamily": "impact, sans-serif", "letterSpacing": "1px" }}>CYBER CARNIVAL</span>
+              </h1>
+            </Reveal>
+
+            {/* subtitle */}
+            <Reveal delay={200}>
+              <p className="text-sm sm:text-base md:text-lg text-gray-400 max-w-md mb-12 leading-relaxed font-light">
+                Step through the gates into AdVITya&apos;s ultimate cybersecurity arena. Solve challenges, climb the leaderboard, and prove your skill at the <span className="text-white font-semibold">Cyber Carnival</span>.
+              </p>
+            </Reveal>
+
+            {/* CTAs */}
+            <Reveal delay={300}>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
+                <Link
+                  href="/Auth/register"
+                  className="group relative inline-flex items-center justify-center px-8 py-3.5 min-w-[200px] text-sm font-bold tracking-widest uppercase bg-[#c8c8c8] text-black transition-all hover:bg-white shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+                  style={{ clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)" }}
+                >
+                  <Flag className="w-4 h-4 mr-2" />
+                  JOIN THE CARNIVAL
+                </Link>
+
+                <div className="relative p-[1px] inline-flex items-center justify-center min-w-[200px] transition-all group hover:bg-white/20"
+                  style={{ clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)" }}>
+                  <div className="absolute inset-0 bg-white/30" />
+                  <Link
+                    href="/challenges"
+                    className="relative w-full h-full bg-[#09090b] group-hover:bg-[#121215] text-white flex items-center justify-center px-8 py-3.5 text-sm font-bold tracking-widest uppercase transition-all"
+                    style={{ clipPath: "polygon(11px 0, 100% 0, 100% calc(100% - 11px), calc(100% - 11px) 100%, 0 100%, 0 11px)" }}
+                  >
+                    <Target className="w-4 h-4 mr-2" />
+                    VIEW CHALLENGES
+                  </Link>
+                </div>
+              </div>
+            </Reveal>
+
+          </div>
+
+          {/* Right Column: Terminal & Decor */}
+          <div className="flex-1 w-full lg:w-auto relative flex flex-col justify-center items-center lg:items-end pb-12 lg:pb-0">
+            {/* countdown */}
+            <Reveal delay={400}>
+              <div className="mb-8 w-[320px] sm:w-[400px] md:w-[480px] lg:ml-auto flex flex-col items-start">
+                <CountdownTimer />
+              </div>
+            </Reveal>
+
+            <Reveal delay={500}>
+              <div className="w-[320px] sm:w-[400px] md:w-[480px] lg:ml-auto">
+                <TypingTerminal />
+              </div>
+            </Reveal>
+
+            {/* scroll down indicator */}
+            <div className="absolute -bottom-12 lg:-bottom-24 right-1/2 translate-x-1/2 lg:right-12 lg:translate-x-0 flex flex-col items-center gap-1 animate-bounce opacity-40">
+              <span className="text-[9px] uppercase tracking-[0.3em] text-gray-500 font-bold">SCROLL</span>
+              <ChevronRight className="w-3.5 h-3.5 rotate-90 text-gray-500" />
             </div>
-          </Reveal>
-
-          {/* title */}
-          <Reveal delay={100}>
-            <h1 className="text-5xl sm:text-7xl md:text-8xl font-black leading-[0.92] mb-6 tracking-tight">
-              <span className="block text-gray-300 animate-glitch">WELCOME TO</span>
-              <span
-                className="block mt-2 bg-clip-text text-transparent animate-text-shimmer"
-                style={{ backgroundImage: "linear-gradient(90deg, #a855f7, #7c3aed, #c084fc, #a855f7)" }}
-              >
-                CYBER CARNIVAL
-              </span>
-            </h1>
-          </Reveal>
-
-          {/* subtitle */}
-          <Reveal delay={200}>
-            <p className="text-base sm:text-lg md:text-xl text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
-              Step through the neon gates into AdVitya&apos;s ultimate
-              cybersecurity arena. Solve challenges, climb the leaderboard, and
-              prove your skill at the <span className="text-purple-400 font-semibold">Cyber Carnival</span>.
-            </p>
-          </Reveal>
-
-          {/* CTAs */}
-          <Reveal delay={300}>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="/Auth/register"
-                className="group relative inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-bold text-sm tracking-wide text-white overflow-hidden transition-all duration-300 bg-purple-600 hover:bg-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:shadow-[0_0_30px_rgba(168,85,247,0.5)]"
-              >
-                <Flag className="w-4 h-4" />
-                Join the Carnival
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-              <Link
-                href="/challenges"
-                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-bold text-sm tracking-wide text-gray-300 border border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-purple-500/30 transition-all duration-300 backdrop-blur-sm"
-              >
-                <Target className="w-4 h-4 text-purple-400" />
-                View Challenges
-              </Link>
-            </div>
-          </Reveal>
-
-          {/* countdown */}
-          <Reveal delay={400}>
-            <div className="mt-14 mb-6">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-gray-600 mb-4 font-medium">CTF begins in</p>
-              <CountdownTimer />
-            </div>
-          </Reveal>
-
-          {/* terminal */}
-          <Reveal delay={500}>
-            <div className="mt-10">
-              <TypingTerminal />
-            </div>
-          </Reveal>
-
-          {/* scroll */}
-          <div className="mt-14 flex flex-col items-center gap-1 animate-bounce opacity-30">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-gray-600">scroll</span>
-            <ChevronRight className="w-4 h-4 rotate-90 text-gray-600" />
           </div>
         </div>
       </section>
@@ -685,7 +587,7 @@ export default function CyberCarnivalHome() {
           <Reveal>
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">
-                <span className="text-purple-400">Challenge</span> <span className="text-gray-300">Categories</span>
+                <span className="text-white">Challenge</span> <span className="text-gray-500">Categories</span>
               </h2>
               <p className="text-gray-600 max-w-xl mx-auto text-sm">
                 Choose your arena. Each category tests a different dimension of your cybersecurity expertise.
@@ -699,12 +601,12 @@ export default function CyberCarnivalHome() {
               return (
                 <Reveal key={cat.name} delay={i * 80}>
                   <TiltCard className="h-full">
-                    <div className="glass-card p-6 group relative overflow-hidden h-full cursor-default border border-white/[0.04] hover:border-purple-500/30">
+                    <div className="glass-card p-6 group relative overflow-hidden h-full cursor-default border border-white/[0.04] hover:border-white/15">
                       {/* hover glow */}
-                      <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full opacity-0 group-hover:opacity-15 transition-opacity duration-500 blur-3xl bg-purple-500" />
+                      <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-500 blur-3xl bg-white" />
                       <div className="relative z-10">
-                        <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-4 bg-purple-500/[0.08] border border-purple-500/20">
-                          <Icon className="w-6 h-6 text-purple-400" />
+                        <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-4 bg-white/[0.05] border border-white/10">
+                          <Icon className="w-6 h-6 text-gray-400" />
                         </div>
                         <h3 className="text-lg font-bold mb-2 text-gray-200">{cat.name}</h3>
                         <p className="text-gray-500 text-sm leading-relaxed">{cat.desc}</p>
@@ -720,13 +622,13 @@ export default function CyberCarnivalHome() {
 
       {/* ════ THE EVENT ═══════════════════════════ */}
       <section className="relative py-28 px-4">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-purple-500/20 to-transparent" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
         <div className="max-w-5xl mx-auto">
           <Reveal>
             <div className="text-center mb-14">
               <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">
-                <span className="text-purple-400">The</span> <span className="text-gray-300">Event</span>
+                <span className="text-white">The</span> <span className="text-gray-500">Event</span>
               </h2>
               <p className="text-gray-600 text-sm max-w-xl mx-auto">
                 A high-stakes cybersecurity CTF at AdVITya 2026, where logic beats luck and precision wins.
@@ -746,15 +648,15 @@ export default function CyberCarnivalHome() {
                 <div className="flex flex-col lg:flex-row gap-8">
                   <div className="flex-1">
                     <h3 className="text-2xl font-extrabold mb-3 text-gray-200">
-                      <span className="text-purple-400">Capture</span> The Flag 🚩
+                      <span className="text-white">Capture</span> The Flag 🚩
                     </h3>
                     <p className="text-gray-500 text-sm leading-relaxed mb-6">
                       Built to test your skill, speed, and strategy. Battle Web, Pwn, Crypto & AI/ML challenges, crack flags, dominate the leaderboard, and win big.
                     </p>
                     <div className="space-y-3 text-sm text-gray-500">
-                      <div className="flex items-center gap-3"><Calendar className="w-4 h-4 text-purple-400 flex-shrink-0" /><span>27 February 2026 (AdVITya&apos;26)</span></div>
-                      <div className="flex items-center gap-3"><Clock className="w-4 h-4 text-purple-400 flex-shrink-0" /><span>10:00 AM – 4:00 PM</span></div>
-                      <div className="flex items-center gap-3"><MapPin className="w-4 h-4 text-purple-400 flex-shrink-0" /><span>Venue: AR-002</span></div>
+                      <div className="flex items-center gap-3"><Calendar className="w-4 h-4 text-gray-400 flex-shrink-0" /><span>27 February 2026 (AdVITya&apos;26)</span></div>
+                      <div className="flex items-center gap-3"><Clock className="w-4 h-4 text-gray-400 flex-shrink-0" /><span>10:00 AM – 4:00 PM</span></div>
+                      <div className="flex items-center gap-3"><MapPin className="w-4 h-4 text-gray-400 flex-shrink-0" /><span>Venue: AR-002</span></div>
                     </div>
                   </div>
 
@@ -776,7 +678,7 @@ export default function CyberCarnivalHome() {
                       </div>
                       <Link
                         href="/Auth/register"
-                        className="mt-5 w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-bold text-sm text-white bg-purple-600 hover:bg-purple-500 transition-all shadow-[0_0_15px_rgba(168,85,247,0.2)]"
+                        className="mt-5 w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-bold text-sm text-black bg-white hover:bg-gray-200 transition-all shadow-[0_0_15px_rgba(255,255,255,0.08)]"
                       >
                         <Flag className="w-4 h-4" />
                         Register Now
@@ -792,37 +694,30 @@ export default function CyberCarnivalHome() {
 
       {/* ════ EVENT TIMELINE ══════════════════════ */}
       <section className="relative py-28 px-4">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-purple-500/15 to-transparent" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
 
         <div className="max-w-3xl mx-auto">
           <Reveal>
             <div className="text-center mb-14">
               <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">
-                <span className="text-purple-400">Event</span> <span className="text-gray-300">Timeline</span>
+                <span className="text-white">Event</span> <span className="text-gray-500">Timeline</span>
               </h2>
               <p className="text-gray-600 text-sm">Key milestones of the Cyber Carnival.</p>
             </div>
           </Reveal>
 
           <div className="relative">
-            <div className="absolute left-[18px] sm:left-[22px] top-0 bottom-0 w-px bg-gradient-to-b from-purple-500/30 via-purple-500/10 to-transparent" />
-
-            <div className="space-y-8">
+            <div className="space-y-6 max-w-2xl mx-auto">
               {events.map((evt, i) => (
                 <Reveal key={i} delay={i * 100}>
-                  <div className="flex gap-5 sm:gap-6 items-start">
-                    <div className="relative flex-shrink-0 mt-1.5">
-                      <div className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-purple-500 animate-pulse-glow ring-4 ring-purple-500/10" />
+                  <div className="glass-card p-6 border border-white/[0.04] bg-[#0f0f13] rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                      <h3 className="text-lg font-bold text-gray-200">{evt.title}</h3>
+                      <span className="inline-flex items-center gap-1.5 text-xs text-gray-400 font-mono bg-white/[0.03] px-3 py-1 rounded-full border border-white/[0.05]">
+                        <Calendar className="w-3.5 h-3.5" /> {evt.date}
+                      </span>
                     </div>
-                    <div className="glass-card p-5 flex-1 border border-white/[0.04]">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-2">
-                        <h3 className="text-base font-bold text-gray-200">{evt.title}</h3>
-                        <span className="inline-flex items-center gap-1.5 text-xs text-purple-400/70 font-mono">
-                          <Calendar className="w-3 h-3" /> {evt.date}
-                        </span>
-                      </div>
-                      <p className="text-gray-500 text-sm leading-relaxed">{evt.desc}</p>
-                    </div>
+                    <p className="text-gray-500 text-sm leading-relaxed">{evt.desc}</p>
                   </div>
                 </Reveal>
               ))}
@@ -833,13 +728,13 @@ export default function CyberCarnivalHome() {
 
       {/* ════ MEET THE TEAM ══════════════════════ */}
       <section className="relative py-28 px-4">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-purple-500/15 to-transparent" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
 
         <div className="max-w-5xl mx-auto">
           <Reveal>
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">
-                <span className="text-purple-400">Meet</span> <span className="text-gray-300">the Team</span>
+                <span className="text-white">Meet</span> <span className="text-gray-500">the Team</span>
               </h2>
               <p className="text-gray-600 max-w-xl mx-auto text-sm">
                 The minds behind the challenges and the platform.
@@ -851,26 +746,14 @@ export default function CyberCarnivalHome() {
           <Reveal delay={100}>
             <div className="mb-14">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-purple-500/[0.08] border border-purple-500/20">
-                  <ShieldCheck className="w-5 h-5 text-purple-400" />
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/[0.05] border border-white/10">
+                  <ShieldCheck className="w-5 h-5 text-gray-400" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-200">CTF Challenge Developers</h3>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 {challengeDevs.map((dev, i) => (
-                  <Reveal key={i} delay={i * 60}>
-                    <a href={dev.link} target="_blank" rel="noopener noreferrer"
-                      className="block p-5 rounded-2xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm group text-center hover:border-purple-500/30 hover:bg-white/[0.04] transition-all duration-300"
-                    >
-                      <div className="w-14 h-14 mx-auto mb-3 rounded-full flex items-center justify-center border border-purple-500/20 bg-purple-500/[0.06] group-hover:bg-purple-500/[0.12] group-hover:border-purple-500/40 transition-all duration-300">
-                        <span className="text-xl font-black text-purple-400">
-                          {dev.name.split(" ").pop().charAt(0)}
-                        </span>
-                      </div>
-                      <p className="text-sm font-semibold text-gray-300 mb-1.5 truncate">{dev.name}</p>
-                      <ExternalLink className="w-3.5 h-3.5 mx-auto text-gray-700 group-hover:text-purple-400 transition-colors" />
-                    </a>
-                  </Reveal>
+                  <TeamMemberCard key={i} dev={dev} delay={i * 60} />
                 ))}
               </div>
             </div>
@@ -880,26 +763,14 @@ export default function CyberCarnivalHome() {
           <Reveal delay={200}>
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-purple-500/[0.08] border border-purple-500/20">
-                  <Code className="w-5 h-5 text-purple-400" />
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/[0.05] border border-white/10">
+                  <Code className="w-5 h-5 text-gray-400" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-200">Web Developers</h3>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 {webDevs.map((dev, i) => (
-                  <Reveal key={i} delay={i * 60}>
-                    <a href={dev.link} target="_blank" rel="noopener noreferrer"
-                      className="block p-5 rounded-2xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm group text-center hover:border-purple-500/30 hover:bg-white/[0.04] transition-all duration-300"
-                    >
-                      <div className="w-14 h-14 mx-auto mb-3 rounded-full flex items-center justify-center border border-purple-500/20 bg-purple-500/[0.06] group-hover:bg-purple-500/[0.12] group-hover:border-purple-500/40 transition-all duration-300">
-                        <span className="text-xl font-black text-purple-400">
-                          {dev.name.split(" ").pop().charAt(0)}
-                        </span>
-                      </div>
-                      <p className="text-sm font-semibold text-gray-300 mb-1.5 truncate">{dev.name}</p>
-                      <ExternalLink className="w-3.5 h-3.5 mx-auto text-gray-700 group-hover:text-purple-400 transition-colors" />
-                    </a>
-                  </Reveal>
+                  <TeamMemberCard key={i} dev={dev} delay={i * 60} />
                 ))}
               </div>
             </div>
@@ -909,22 +780,22 @@ export default function CyberCarnivalHome() {
 
       {/* ════ FOOTER ═════════════════════════════ */}
       <footer className="relative border-t border-white/[0.04] pt-16 pb-8 px-4 mt-12">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-purple-500/20 to-transparent" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-12 mb-12">
             {/* brand */}
-            <div>
-              <h3 className="text-xl font-extrabold text-purple-400 mb-3">CyberCarnival</h3>
+            <div className="lg:pr-12">
+              <h3 className="text-xl font-extrabold text-white mb-3 tracking-tight">CyberCarnival</h3>
               <p className="text-gray-600 text-sm leading-relaxed">
-                The ultimate CTF battleground — organized by 5 clubs of VIT Bhopal as part of AdVitya 2026.
+                The ultimate CTF battleground organized as part of AdVitya 2026.
               </p>
             </div>
 
             {/* quick links */}
-            <div>
-              <h4 className="text-xs uppercase tracking-widest text-gray-500 font-bold mb-4">Quick Links</h4>
-              <ul className="space-y-2.5">
+            <div className="sm:pl-8">
+              <h4 className="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-black mb-5">Quick Links</h4>
+              <ul className="space-y-3">
                 {[
                   { name: "Challenges", href: "/challenges" },
                   { name: "Leaderboard", href: "/leaderboard" },
@@ -932,48 +803,37 @@ export default function CyberCarnivalHome() {
                   { name: "Register", href: "/Auth/register" },
                 ].map((l) => (
                   <li key={l.name}>
-                    <Link href={l.href} className="text-sm text-gray-600 hover:text-purple-400 transition-colors inline-flex items-center gap-1">
-                      <ChevronRight className="w-3 h-3" /> {l.name}
+                    <Link href={l.href} className="text-sm text-gray-600 hover:text-white transition-all duration-300 inline-flex items-center gap-1 group">
+                      <ChevronRight className="w-3 h-3 text-gray-800 group-hover:translate-x-0.5 transition-transform" /> {l.name}
                     </Link>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* connect */}
-            <div>
-              <h4 className="text-xs uppercase tracking-widest text-gray-500 font-bold mb-4">Connect</h4>
-              <ul className="space-y-2.5">
-                {[
-                  { name: "GitHub", icon: Github, href: "#" },
-                  { name: "LinkedIn", icon: Linkedin, href: "#" },
-                ].map((s) => {
-                  const SIcon = s.icon;
-                  return (
-                    <li key={s.name}>
-                      <a href={s.href} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-600 hover:text-purple-400 transition-colors inline-flex items-center gap-2">
-                        <SIcon className="w-4 h-4" /> {s.name}
-                      </a>
-                    </li>
-                  );
-                })}
+            {/* organized by */}
+            <div className="sm:pl-8">
+              <h4 className="text-[10px] uppercase tracking-[0.2em] text-gray-300 font-black mb-5">Organized By</h4>
+              <ul className="space-y-3">
+                {clubLinks.map((club) => (
+                  <li key={club.name}>
+                    <a
+                      href={club.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-gray-500 hover:text-white transition-all duration-300 inline-flex items-center gap-2 group"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-gray-900 group-hover:bg-white transition-colors" />
+                      {club.name}
+                    </a>
+                  </li>
+                ))}
               </ul>
-            </div>
-
-            {/* about */}
-            <div>
-              <h4 className="text-xs uppercase tracking-widest text-gray-500 font-bold mb-4">About</h4>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                Organized by <span className="text-purple-400 font-semibold">5 clubs of VIT Bhopal</span> — fostering cybersecurity culture through hands-on competitions, workshops, and community events.
-              </p>
             </div>
           </div>
 
-          <div className="border-t border-white/[0.04] pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <span className="text-xs text-gray-700">&copy; {new Date().getFullYear()} CyberCarnival &bull; AdVitya 2026. All rights reserved.</span>
-            <span className="text-xs text-gray-700 font-mono inline-flex items-center gap-1.5">
-              &lt;/&gt; Built with ♥ for AdVitya 2026 <HiddenFlag />
-            </span>
+          <div className="border-t border-white/[0.04] pt-8 mt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <span className="text-[10px] uppercase tracking-widest text-gray-300">&copy; {new Date().getFullYear()} CyberCarnival &bull; AdVitya 2026</span>
           </div>
         </div>
       </footer>

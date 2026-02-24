@@ -100,10 +100,10 @@ body {
 }
 
 /* ═══════════════════════════════════════════
-   CYBER CARNIVAL — PURPLE / GREY PALETTE
+   CYBER CARNIVAL — WHITE / GREY PALETTE
    ═══════════════════════════════════════════ */
 
-/* ── Animated border trail (animata.design inspired) ── */
+/* ── Animated border trail ── */
 @property --angle {
     syntax: "<angle>";
     initial-value: 0deg;
@@ -136,7 +136,7 @@ body {
     position: absolute;
     inset: 0;
     border-radius: 16px;
-    background: conic-gradient(from var(--angle) at 50% 50%, transparent 85%, #a855f7);
+    background: conic-gradient(from var(--angle) at 50% 50%, transparent 85%, rgba(255, 255, 255, 0.6));
     animation: trail 6s linear infinite;
 }
 
@@ -192,7 +192,7 @@ body {
     animation: float 5s ease-in-out infinite;
 }
 
-/* ── Fade in up (scroll-triggered look) ── */
+/* ── Fade in up ── */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -210,16 +210,16 @@ body {
     opacity: 0;
 }
 
-/* ── Pulse glow for nodes ── */
+/* ── Pulse glow (white) ── */
 @keyframes pulse-glow {
 
     0%,
     100% {
-        box-shadow: 0 0 6px rgba(168, 85, 247, 0.4);
+        box-shadow: 0 0 6px rgba(255, 255, 255, 0.25);
     }
 
     50% {
-        box-shadow: 0 0 14px rgba(168, 85, 247, 0.7), 0 0 28px rgba(168, 85, 247, 0.3);
+        box-shadow: 0 0 14px rgba(255, 255, 255, 0.5), 0 0 28px rgba(255, 255, 255, 0.15);
     }
 }
 
@@ -227,13 +227,13 @@ body {
     animation: pulse-glow 3s ease-in-out infinite;
 }
 
-/* ── Glitch (subtle) ── */
+/* ── Glitch (subtle, white) ── */
 @keyframes glitch {
 
     0%,
     100% {
         transform: translate(0);
-        text-shadow: 1px 0 rgba(168, 85, 247, 0.5), -1px 0 rgba(168, 85, 247, 0.3);
+        text-shadow: 1px 0 rgba(255, 255, 255, 0.3), -1px 0 rgba(255, 255, 255, 0.2);
     }
 
     20% {
@@ -257,7 +257,7 @@ body {
     animation: glitch 4s ease-in-out infinite;
 }
 
-/* ── Scan line ── */
+/* ── Scan line (white) ── */
 @keyframes scan-line {
     0% {
         top: -5%;
@@ -275,7 +275,7 @@ body {
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.25), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
     animation: scan-line 5s linear infinite;
     pointer-events: none;
 }
@@ -298,16 +298,16 @@ body {
     opacity: 0;
 }
 
-/* ── Border glow (purple only) ── */
+/* ── Border glow (white) ── */
 @keyframes border-glow {
 
     0%,
     100% {
-        border-color: rgba(168, 85, 247, 0.2);
+        border-color: rgba(255, 255, 255, 0.1);
     }
 
     50% {
-        border-color: rgba(168, 85, 247, 0.5);
+        border-color: rgba(255, 255, 255, 0.3);
     }
 }
 
@@ -332,27 +332,21 @@ body {
 }
 
 .glass-card:hover {
-    background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(168, 85, 247, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
     transform: translateY(-4px);
-    box-shadow: 0 0 30px rgba(168, 85, 247, 0.08), 0 20px 40px rgba(0, 0, 0, 0.3);
-}
-
-/* ═══ NEON TEXT (purple only) ═══ */
-.neon-purple {
-    color: #a855f7;
-    text-shadow: 0 0 8px rgba(168, 85, 247, 0.5);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.04), 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
 /* ═══ HERO GRID ═══ */
 .cyber-grid {
     background-image:
-        linear-gradient(rgba(168, 85, 247, 0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(168, 85, 247, 0.04) 1px, transparent 1px);
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
     background-size: 60px 60px;
 }
 
-/* ═══ Interactive dot grid (animata-inspired) ═══ */
+/* ═══ Interactive dot grid ═══ */
 @keyframes dot-pulse {
 
     0%,
@@ -418,12 +412,12 @@ body {
     left: 0;
     width: 8px;
     height: 8px;
-    background: #a855f7;
+    background: #ffffff;
     border-radius: 50%;
     pointer-events: none;
     z-index: 99999;
     transition: transform 0.1s ease, background 0.2s ease;
-    box-shadow: 0 0 8px rgba(168, 85, 247, 0.8), 0 0 20px rgba(168, 85, 247, 0.3);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.6), 0 0 20px rgba(255, 255, 255, 0.2);
 }
 
 .cursor-ring {
@@ -432,7 +426,7 @@ body {
     left: 0;
     width: 36px;
     height: 36px;
-    border: 1.5px solid rgba(168, 85, 247, 0.4);
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
     border-radius: 50%;
     pointer-events: none;
     z-index: 99998;
@@ -442,84 +436,8 @@ body {
 .cursor-ring.hovering {
     width: 50px;
     height: 50px;
-    border-color: rgba(168, 85, 247, 0.7);
-    background: rgba(168, 85, 247, 0.06);
-}
-
-/* ═══ SLASH INTRO ═══ */
-@keyframes slash-glow-pulse {
-
-    0%,
-    100% {
-        box-shadow: 0 0 15px rgba(168, 85, 247, 0.3), 0 0 40px rgba(168, 85, 247, 0.1);
-    }
-
-    50% {
-        box-shadow: 0 0 25px rgba(168, 85, 247, 0.6), 0 0 60px rgba(168, 85, 247, 0.2);
-    }
-}
-
-@keyframes intro-text-flicker {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    5% {
-        opacity: 0.3;
-    }
-
-    10% {
-        opacity: 1;
-    }
-
-    15% {
-        opacity: 0.7;
-    }
-
-    20% {
-        opacity: 1;
-    }
-}
-
-@keyframes spark-fly {
-    0% {
-        transform: translate(0, 0) scale(1);
-        opacity: 1;
-    }
-
-    100% {
-        transform: translate(var(--sx), var(--sy)) scale(0);
-        opacity: 0;
-    }
-}
-
-.spark {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: #a855f7;
-    border-radius: 50%;
-    pointer-events: none;
-    animation: spark-fly 0.6s ease-out forwards;
-    box-shadow: 0 0 6px #a855f7, 0 0 12px rgba(168, 85, 247, 0.5);
-}
-
-@keyframes drag-hint-bounce {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-6px);
-    }
-}
-
-.drag-hint {
-    animation: drag-hint-bounce 1.5s ease-in-out infinite;
+    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.04);
 }
 
 /* Hide on touch devices */
