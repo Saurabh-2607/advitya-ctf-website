@@ -29,7 +29,7 @@ export default function InstanceChallenge({
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-3 p-4">
         <div className="flex items-center gap-2">
           <span className=" flex flex-row gap-2 px-2 py-1 bg-white/80 text-black text-xs rounded-full ">
             <span className=" font-bold uppercase">{challenge.category} </span>

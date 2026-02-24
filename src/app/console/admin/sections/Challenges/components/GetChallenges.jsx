@@ -10,6 +10,7 @@ const GetChallenges = ({
   deletingId,
   onBuildInstance,
   buildingId,
+  onEdit
 }) => {
   if (loading) {
     return (
@@ -47,6 +48,7 @@ const GetChallenges = ({
           deletingId={deletingId}
           onBuildInstance={onBuildInstance}
           buildingId={buildingId}
+          onEdit={onEdit}
         />
       ))}
     </div>

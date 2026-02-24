@@ -7,6 +7,7 @@ import { Plus } from "lucide-react";
 import GetChallenges from "./components/GetChallenges";
 import NewNormalChall from "./components/NewNormalChall";
 import NewInstanceChall from "./components/NewInstanceChall";
+import EditNormalChall from "./components/EditNormalChall";
 import { useAuth } from "@/context/AuthContext";
 
 const Challenges = () => {
@@ -19,6 +20,7 @@ const Challenges = () => {
   const [togglingId, setTogglingId] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
   const [buildingId, setBuildingId] = useState(null);
+  const [editingChallenge, setEditingChallenge] = useState(null);
 
   const [showNewNormal, setShowNewNormal] = useState(false);
   const [showNewInstance, setShowNewInstance] = useState(false);
@@ -124,7 +126,12 @@ const Challenges = () => {
       console.error("Delete error:", err);
     } finally {
       setDeletingId(null);
+
     }
+  };
+
+  const handleEdit = (challenge) => {
+    setEditingChallenge(challenge);
   };
 
   const buildInstance = async (id) => {
@@ -133,13 +140,13 @@ const Challenges = () => {
       prev.map((c) =>
         c._id === id
           ? {
-              ...c,
-              instance: {
-                ...c.instance,
-                buildStatus: "building",
-                buildError: null,
-              },
-            }
+            ...c,
+            instance: {
+              ...c.instance,
+              buildStatus: "building",
+              buildError: null,
+            },
+          }
           : c,
       ),
     );
@@ -160,13 +167,13 @@ const Challenges = () => {
           prev.map((c) =>
             c._id === id
               ? {
-                  ...c,
-                  instance: {
-                    ...c.instance,
-                    buildStatus: "built",
-                    buildError: null
-                  },
-                }
+                ...c,
+                instance: {
+                  ...c.instance,
+                  buildStatus: "built",
+                  buildError: null
+                },
+              }
               : c,
           ),
         );
@@ -176,13 +183,13 @@ const Challenges = () => {
           prev.map((c) =>
             c._id === id
               ? {
-                  ...c,
-                  instance: {
-                    ...c.instance,
-                    buildStatus: "failed",
-                    buildError: data.message || "Build failed",
-                  },
-                }
+                ...c,
+                instance: {
+                  ...c.instance,
+                  buildStatus: "failed",
+                  buildError: data.message || "Build failed",
+                },
+              }
               : c,
           ),
         );
@@ -192,13 +199,13 @@ const Challenges = () => {
         prev.map((c) =>
           c._id === id
             ? {
-                ...c,
-                instance: {
-                  ...c.instance,
-                  buildStatus: "failed",
-                  buildError: err.message || "Build failed",
-                },
-              }
+              ...c,
+              instance: {
+                ...c.instance,
+                buildStatus: "failed",
+                buildError: err.message || "Build failed",
+              },
+            }
             : c,
         ),
       );
@@ -225,13 +232,13 @@ const Challenges = () => {
               Add New Normal Challenge
             </button>
 
-            <button
+            {/* <button
               onClick={() => setShowNewInstance(true)}
               className="inline-flex items-center gap-2 bg-white/20 hover:bg-white text-white hover:text-black px-4 py-2 rounded-4xl text-sm font-medium"
             >
               <Plus className="w-4 h-4" />
               Add New Instance Challenge
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
@@ -245,6 +252,7 @@ const Challenges = () => {
         onToggleVisibility={toggleVisibility}
         onDeleteChallenge={deleteChallenge}
         onBuildInstance={buildInstance}
+        onEdit={handleEdit}
       />
 
       {/* MODALS */}
@@ -255,14 +263,30 @@ const Challenges = () => {
         />
       )}
 
-      {showNewInstance && (
+      {editingChallenge && (
+        <EditNormalChall
+          challenge={editingChallenge}
+          onClose={() => setEditingChallenge(null)}
+          onUpdated={(updatedChallenge) => {
+            setChallenges((prev) =>
+              prev.map((c) =>
+                c._id === updatedChallenge._id ? updatedChallenge : c
+              )
+            );
+          }}
+        />
+      )}
+
+      {/* {showNewInstance && (
         <NewInstanceChall
           onClose={() => setShowNewInstance(false)}
           onCreated={refreshChallenges}
         />
-      )}
+      )} */}
     </>
   );
 };
 
 export default Challenges;
+
+

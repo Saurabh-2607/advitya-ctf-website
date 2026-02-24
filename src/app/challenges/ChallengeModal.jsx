@@ -121,9 +121,9 @@ const ChallengeModal = ({
                     </a>
                   )}
 
-                  {challenge.type === "instance" && (
+                  {/* {challenge.type === "instance" && (
                     <InstancePanel challengeId={challenge._id} />
-                  )}
+                  )} */}
 
                   <div className="pt-4">
                     <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">

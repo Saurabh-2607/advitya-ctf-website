@@ -43,7 +43,7 @@ const tabs = [
 export default function Page() {
   const { user, role } = useAuth();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState("");
+  const [activeTab, setActiveTab] = useState("challenges");
 
   const [loading, setLoading] = useState(true);
 

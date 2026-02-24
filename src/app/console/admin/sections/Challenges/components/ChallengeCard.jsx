@@ -10,10 +10,11 @@ const ChallengeCard = ({
   onDeleteChallenge,
   deletingId,
   onBuildInstance,
-  buildingId
+  buildingId,
+  onEdit
 }) => {
   return (
-    <div className="bg-white/10 rounded-lg p-4">
+    <div className="bg-white/10 rounded-lg">
       {challenge.type === "instance" ? (
         <InstanceChallenge
           challenge={challenge}
@@ -31,6 +32,7 @@ const ChallengeCard = ({
           togglingId={togglingId}
           onDeleteChallenge={onDeleteChallenge}
           deletingId={deletingId}
+          onEdit={onEdit}
         />
       )}
     </div>

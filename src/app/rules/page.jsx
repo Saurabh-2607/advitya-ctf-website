@@ -13,22 +13,25 @@ export default function RulesPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-200 px-6 py-12">
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-4xl font-bold text-cyan-400 mb-2">
-          CTF Rules
+    <div className="text-white px-6 py-12">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-4xl font-bold text-white mb-2">
+          Rules and Terms
         </h1>
-        <p className="text-gray-400 mb-8">
+        <p className="text-white/60 mb-2">
           Please read and follow all rules carefully during the CTF event.
         </p>
+        <div className="mb-8 p-4 bg-red-500/10 text-red-400">
+          Violation of any rule may result in immediate disqualification and removal from the competition.
+        </div>
 
-        <ul className="space-y-4">
+        <ul className="space-y-1 text-white/80">
           {rules.map((rule, index) => (
             <li
               key={index}
-              className="bg-gray-900 border border-gray-800 rounded-xl p-4"
+              className="border-b border-white/10 p-3"
             >
-              <span className="text-cyan-400 font-semibold mr-2">
+              <span className="text-white font-semibold mr-4 text-xl">
                 {index + 1}.
               </span>
               {rule}
@@ -36,9 +39,7 @@ export default function RulesPage() {
           ))}
         </ul>
 
-        <div className="mt-10 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400">
-          Violation of any rule may result in immediate disqualification and removal from the competition.
-        </div>
+        
       </div>
     </div>
   );

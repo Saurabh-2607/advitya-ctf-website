@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import PendingUser from "@/lib/models/PendingUser";
 import User from "@/lib/models/User";
+import { sendOtpEmail } from "@/lib/ses";
 
 /* ---------------- HELPERS ---------------- */
 
@@ -20,8 +21,7 @@ export async function POST(req) {
   try {
     await connectDB();
 
-    const body = await req.json();
-    const { name, email, password } = body;
+    const { name, email, password } = await req.json();
 
     /* ---------- VALIDATION ---------- */
 
@@ -34,10 +34,7 @@ export async function POST(req) {
 
     if (!email || !isVitEmail(email)) {
       return NextResponse.json(
-        {
-          success: false,
-          message: "Only @vitbhopal.ac.in emails allowed",
-        },
+        { success: false, message: "Only @vitbhopal.ac.in emails allowed" },
         { status: 400 }
       );
     }
@@ -66,13 +63,11 @@ export async function POST(req) {
     /* ---------- OTP SETUP ---------- */
 
     const otp = generateOtp();
-    const otpExpiresAt = new Date(Date.now() + 5 * 60 * 1000); 
+    const otpExpiresAt = new Date(Date.now() + 5 * 60 * 1000);
 
-    /* ---------- REMOVE OLD PENDING ENTRY ---------- */
+    /* ---------- REMOVE OLD PENDING ---------- */
 
     await PendingUser.deleteOne({ email });
-
-    /* ---------- CREATE PENDING USER ---------- */
 
     const pendingUser = new PendingUser({
       name,
@@ -84,21 +79,14 @@ export async function POST(req) {
 
     await pendingUser.save();
 
-    /* ---------- MOCK EMAIL (LOG OTP) ---------- */
+    /* ---------- SEND EMAIL ---------- */
 
-    console.log("========== OTP GENERATED ==========");
-    console.log("Email:", email);
-    console.log("OTP:", otp);
-    console.log("Expires at:", otpExpiresAt.toISOString());
-    console.log("===================================");
+    await sendOtpEmail(email, otp);
 
-    /* ---------- RESPONSE ---------- */
+    console.log("OTP sent to:", email);
 
     return NextResponse.json(
-      {
-        success: true,
-        message: "OTP sent to email ",
-      },
+      { success: true, message: "OTP sent to email" },
       { status: 200 }
     );
   } catch (err) {

@@ -19,7 +19,6 @@ export function initSocket(server) {
     global[GLOBAL_IO_KEY] = io;
   }
 
-  // 🧠 Attach listeners ONLY ONCE
   if (!global[GLOBAL_IO_INITED]) {
     io.use((socket, next) => {
       try {

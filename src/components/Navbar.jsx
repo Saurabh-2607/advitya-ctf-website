@@ -7,16 +7,16 @@ import { toast } from "react-toastify";
 import Image from "next/image";
 
 import {
-  Menu,
-  X,
-  Flag,
-  Trophy,
-  LogOut,
-  Settings,
-  Users,
-  Bell,
-  User,
-  Scale,
+    Menu,
+    X,
+    Flag,
+    Trophy,
+    LogOut,
+    Settings,
+    Users,
+    Bell,
+    User,
+    Scale,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
@@ -30,14 +30,14 @@ export default function Navbar() {
 
     const { logout, isAuthenticated, user, role, token } = useAuth();
 
-  const navLinks = [
-    { name: "Challenges", href: "/challenges", icon: Flag },
-    { name: "Leaderboard", href: "/leaderboard", icon: Trophy },
-    { name: "Teams", href: "/teams", icon: Users },
-    { name: "Notifications", href: "/notifications", icon: Bell },
-    { name: "Rules", href: "/rules", icon: Scale },
-    { name: "MyTeam", href: "/myTeam", icon: Users },
-  ];
+    const navLinks = [
+        { name: "Challenges", href: "/challenges", icon: Flag },
+        { name: "Leaderboard", href: "/leaderboard", icon: Trophy },
+        { name: "Teams", href: "/teams", icon: Users },
+        { name: "Notifications", href: "/notifications", icon: Bell },
+        { name: "Rules", href: "/rules", icon: Scale },
+        { name: "MyTeam", href: "/myTeam", icon: Users },
+    ];
 
     const isActive = (href) => pathname === href;
 
@@ -234,12 +234,20 @@ export default function Navbar() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
                         {/* Logo Section */}
+
                         <div className="flex items-center">
                             <Link
                                 href="/"
-                                className="flex-shrink-0 flex items-center text-xl mr-8"
+                                className="flex-shrink-0 flex items-center mr-8"
                             >
-                                CyberCarnival
+                                <Image
+                                    src="/logo.png"
+                                    alt="Logo"
+                                    width={130}
+                                    height={100}
+                                    priority
+                                    className="object-contain"
+                                />
                             </Link>
                         </div>
 

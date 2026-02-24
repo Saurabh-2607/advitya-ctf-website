@@ -132,14 +132,13 @@ export async function PUT(req, { params }) {
     return new Response(
       JSON.stringify({
         message: "Challenge updated successfully",
-        challenge,
+        updatedChallenge: challenge,
         success: true,
       }),
       {
         status: 200,
-
         headers: { "Content-Type": "application/json" },
-      },
+      }
     );
   } catch (err) {
     console.error("JWT error:", err);
