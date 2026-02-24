@@ -235,10 +235,10 @@ export default function Navbar() {
                     <div className="flex justify-between items-center h-16">
                         {/* Logo Section */}
 
-                        <div className="flex items-center">
+                        <div className="flex items-center mr-32">
                             <Link
                                 href="/"
-                                className="flex-shrink-0 flex items-center mr-8"
+                                className="flex-shrink-0 flex items-center "
                             >
                                 <Image
                                     src="/logo.png"
