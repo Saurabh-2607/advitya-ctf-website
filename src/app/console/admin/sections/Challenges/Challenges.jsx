@@ -215,31 +215,23 @@ const Challenges = () => {
   };
 
   return (
-    <>
+    <div className="space-y-6">
       {/* HEADER */}
-      <div className="max-w-6xl mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-semibold text-slate-100">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-white tracking-tight">
             Challenges (Admin)
           </h1>
+        </div>
 
-          <div className="flex gap-2">
-            <button
-              onClick={() => setShowNewNormal(true)}
-              className="inline-flex items-center gap-2 bg-white/20 hover:bg-white text-white hover:text-black px-4 py-2 rounded-4xl text-sm font-medium"
-            >
-              <Plus className="w-4 h-4" />
-              Add New Normal Challenge
-            </button>
-
-            {/* <button
-              onClick={() => setShowNewInstance(true)}
-              className="inline-flex items-center gap-2 bg-white/20 hover:bg-white text-white hover:text-black px-4 py-2 rounded-4xl text-sm font-medium"
-            >
-              <Plus className="w-4 h-4" />
-              Add New Instance Challenge
-            </button> */}
-          </div>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setShowNewNormal(true)}
+            className="inline-flex items-center gap-2 bg-neutral-800 hover:bg-neutral-700 text-white border border-neutral-700 px-4 py-2 rounded-lg text-xs font-medium transition-all"
+          >
+            <Plus className="w-4 h-4" />
+            Add Challenge
+          </button>
         </div>
       </div>
 
@@ -277,13 +269,13 @@ const Challenges = () => {
         />
       )}
 
-      {/* {showNewInstance && (
+      {showNewInstance && (
         <NewInstanceChall
           onClose={() => setShowNewInstance(false)}
           onCreated={refreshChallenges}
         />
-      )} */}
-    </>
+      )}
+    </div>
   );
 };
 

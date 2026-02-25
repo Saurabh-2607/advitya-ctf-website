@@ -49,10 +49,15 @@ export default function AdminUsersPage() {
 
   if (loading) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-3 border-white/10 border-t-red-500 rounded-full animate-spin mx-auto mb-4"></div>
-          <div className="text-slate-300 font-medium">Loading All Users...</div>
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="relative mx-auto w-12 h-12">
+            <div className="absolute inset-0 border-4 border-neutral-800 rounded-full"></div>
+            <div className="absolute inset-0 border-4 border-t-neutral-100 border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+          </div>
+          <div className="text-neutral-400 font-medium animate-pulse">
+            Loading Users...
+          </div>
         </div>
       </div>
     );
@@ -60,106 +65,123 @@ export default function AdminUsersPage() {
 
   if (error) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center text-red-400">
-        {error}
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-6 text-center max-w-md">
+          <div className="text-red-400 font-semibold mb-2">Error Loading Users</div>
+          <p className="text-neutral-400 text-sm">{error}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-4 text-white">
+    <div className="max-w-7xl mx-auto space-y-6 pb-20">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-8 px-4">
         <div>
-          <h1 className="text-3xl font-bold text-white">All Users</h1>
+          <h1 className="text-3xl font-bold text-white tracking-tight">User Management</h1>
+          <p className="text-neutral-400 mt-1">Monitor and manage registered participants</p>
         </div>
-        <div className="gap-2 flex">
-          <span className="inline-flex items-center gap-2 bg-white text-black px-4 py-2 rounded-4xl text-sm font-medium ">
-            <Users className="w-4 h-4"></Users>
-            <span>Total Users: {users.length}</span>
-          </span>
+        
+        <div className="flex items-center gap-3">
+          <div className="inline-flex items-center gap-2 bg-neutral-900 border border-neutral-800 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm">
+            <Users className="w-4 h-4 text-emerald-500" />
+            <span className="text-neutral-400">Total Users:</span>
+            <span className="font-bold">{users.length}</span>
+          </div>
         </div>
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto rounded-xl border border-white/10 bg-white/5 backdrop-blur">
-        <table className="min-w-full text-sm">
-          <thead className="bg-white/10 text-white/70 uppercase tracking-wider">
-            <tr>
-              <th className="px-4 py-3 text-left">User</th>
-              <th className="px-4 py-3 text-left">Email</th>
-              <th className="px-4 py-3 text-left">Role</th>
-              <th className="px-4 py-3 text-left">Team</th>
-              <th className="px-4 py-3 text-left">Solved</th>
-              <th className="px-4 py-3 text-left">Joined</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr
-                key={user._id}
-                className="border-t border-white/10 hover:bg-white/5 transition"
-              >
-                {/* Name */}
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-white/40" />
-                    <span className="font-medium">{user.name}</span>
-                  </div>
-                </td>
-
-                {/* Email */}
-                <td className="px-4 py-3 text-white/70">
-                  <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-white/30" />
-                    {user.email}
-                  </div>
-                </td>
-
-                {/* Role */}
-                <td className="px-4 py-3 ">
-                  {user.role === "sudo" ? (
-                    <span className="px-2 py-1 text-xs rounded-full bg-green-500/20 text-green-300 border border-green-500/30">
-                      ADMIN
-                    </span>
-                  ) : (
-                    <span className="px-3 py-1 text-xs rounded-full bg-white/10 text-white/70 border border-white/20">
-                      USER
-                    </span>
-                  )}
-                </td>
-
-                {/* Team */}
-                <td className="px-4 py-3">
-                  {user.team ? (
-                    <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4 text-white/40" />
-                      {user.team.name}
-                    </div>
-                  ) : (
-                    <span className="text-white/40">—</span>
-                  )}
-                </td>
-
-                {/* Solved */}
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-400" />
-                    {user.solvedChallenges?.length || 0}
-                  </div>
-                </td>
-
-                {/* Created */}
-                <td className="px-4 py-3 text-white/60">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-white/30" />
-                    {new Date(user.createdAt).toLocaleDateString()}
-                  </div>
-                </td>
+      <div className="bg-neutral-900/50 border border-neutral-800 rounded-2xl overflow-hidden backdrop-blur-sm shadow-xl">
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm text-left">
+            <thead className="bg-neutral-800/50 text-neutral-400 font-semibold uppercase tracking-wider text-xs border-b border-neutral-800">
+              <tr>
+                <th className="px-6 py-4">User</th>
+                <th className="px-6 py-4">Contact</th>
+                <th className="px-6 py-4">Role</th>
+                <th className="px-6 py-4">Team</th>
+                <th className="px-6 py-4">Stats</th>
+                <th className="px-6 py-4">Date Joined</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-neutral-800">
+              {users.map((user) => (
+                <tr
+                  key={user._id}
+                  className="hover:bg-neutral-800/30 transition-colors group"
+                >
+                  {/* Name */}
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 group-hover:bg-neutral-700 group-hover:text-white transition-colors">
+                        <User className="w-4 h-4" />
+                      </div>
+                      <span className="font-semibold text-white group-hover:text-blue-400 transition-colors">{user.name}</span>
+                    </div>
+                  </td>
+
+                  {/* Email */}
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2 text-neutral-400 group-hover:text-neutral-300 transition-colors">
+                      <Mail className="w-3.5 h-3.5" />
+                      {user.email}
+                    </div>
+                  </td>
+
+                  {/* Role */}
+                  <td className="px-6 py-4">
+                    {user.role === "sudo" ? (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/10">
+                        <Shield className="w-3 h-3" /> ADMIN
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-neutral-800 text-neutral-400 border border-neutral-700">
+                        USER
+                      </span>
+                    )}
+                  </td>
+
+                  {/* Team */}
+                  <td className="px-6 py-4">
+                    {user.team ? (
+                      <div className="flex items-center gap-2 text-white">
+                        <div className="w-6 h-6 rounded bg-neutral-800 flex items-center justify-center">
+                          <Users className="w-3 h-3 text-emerald-500" />
+                        </div>
+                        <span className="font-medium">{user.team.name}</span>
+                      </div>
+                    ) : (
+                      <span className="text-neutral-600 italic text-xs">No Team</span>
+                    )}
+                  </td>
+
+                  {/* Solved */}
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2 text-neutral-300">
+                      <CheckCircle className="w-4 h-4 text-emerald-500" />
+                      <span className="font-mono font-medium">{user.solvedChallenges?.length || 0}</span>
+                      <span className="text-xs text-neutral-500 uppercase tracking-widest">Solves</span>
+                    </div>
+                  </td>
+
+                  {/* Created */}
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2 text-neutral-500 text-xs">
+                      <Calendar className="w-3.5 h-3.5" />
+                      {new Date(user.createdAt).toLocaleDateString(undefined, {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                      })}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

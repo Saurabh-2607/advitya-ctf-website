@@ -632,7 +632,7 @@ const challengeDevs = [
 
 const webDevs = [
   { name: "Umair Malik", link: "https://www.linkedin.com/in/parinita-piplewar/", tags: ["Frontend", "Backend" , "Database" , "Infrastructure" , "Auth" , "Security"] },
-
+  { name: "Saurabh Sharma", link: "https://www.srbh.site/", tags: ["Frontend", "UI/UX"] },
   { name: "Par1n1ta", link: "https://www.linkedin.com/in/parinita-piplewar/", tags: ["Frontend", "Notifications"] },
   { name: "AnkitS01", link: "https://linkedin.com/in/ankit-s01", tags: ["Frontend", "Home Page"] },
   { name: "Snow", link: "https://www.linkedin.com/in/shital-das-537014326", tags: ["Frontend", "Rules Page"] },
