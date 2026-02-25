@@ -1,26 +1,23 @@
-const ipHits = new Map();
+const hits = new Map();
 
-export function rateLimit({ windowMs, max }) {
-  return (req) => {
-    const ip =
-      req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip || "unknown";
-
+export function rateLimit({ windowMs = 60000, max = 10 }) {
+  return (key) => {
     const now = Date.now();
     const windowStart = now - windowMs;
 
-    if (!ipHits.has(ip)) {
-      ipHits.set(ip, []);
+    if (!hits.has(key)) {
+      hits.set(key, []);
     }
 
-    const timestamps = ipHits.get(ip).filter((ts) => ts > windowStart);
+    const timestamps = hits.get(key).filter((ts) => ts > windowStart);
 
     if (timestamps.length >= max) {
-      return false; // blocked
+      return false;
     }
 
     timestamps.push(now);
-    ipHits.set(ip, timestamps);
+    hits.set(key, timestamps);
 
-    return true; // allowed
+    return true;
   };
 }

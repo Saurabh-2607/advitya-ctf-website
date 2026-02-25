@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HackHaul CTF | Access Verification</title>
+    <title>CyberCarnival CTF | Access Verification</title>
     <style>
         body,
         html {
@@ -193,27 +193,30 @@
                 <tr>
                     <td class="body">
                         <p class="text" style="color: #ccc; margin-bottom: 24px; font-weight: 500;">
-                            A sign-in attempt requires further verification because we did not recognize your account. To
-                            complete the sign-in, enter the verification code.
+                            Welcome to CyberCarnival CTF.<br>
+                            Your account has been created successfully.<br>
+                            Please verify your email address using the One-Time Password (OTP) below to activate your
+                            account.
                         </p>
 
                         <div class="otp-container">
-                            <span class="otp-label">Verification Code</span>
+                            <span class="otp-label">OTP Code</span>
                             <div class="otp-code">{{OTP_CODE}}</div>
                         </div>
 
                         <div class="divider"></div>
 
                         <p class="warning-text">
-                            If you did not attempt to sign in to your account, your password may be compromised. Visit
-                            vitbctf.dev immediately to reset your password.
+                            This code is valid for <strong>5 minutes</strong>.<br>
+                            If you did not register for CyberCarnival CTF, you can safely ignore this email.<br>
+                            For security reasons, never share your OTP with anyone.
                         </p>
                     </td>
                 </tr>
             </table>
         </div>
         <div class="footer">
-            HackHaul CTF &copy; Security First
+            CyberCarnival CTF &copy; Security First
         </div>
     </center>
 </body>

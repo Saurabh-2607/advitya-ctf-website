@@ -19,7 +19,6 @@ const page = () => {
   const { user, isAuthenticated } = useAuth();
   const router = useRouter();
 
-  /* ---------------- AUTH GUARD ---------------- */
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -65,13 +64,9 @@ const page = () => {
     );
   }
 
-  /* ---------------- HAS TEAM ---------------- */
-
   if (team) {
     return <MyTeam />;
   }
-
-  /* ---------------- NO TEAM ---------------- */
 
   return (
     <div className="max-w-xl mx-auto px-4 py-10 text-center space-y-8">

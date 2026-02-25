@@ -33,7 +33,6 @@ export async function GET(req) {
     await connectDB();
 
     const user = await User.findById(decoded.userId);
-    console.log(user);
 
     if (!user) {
       return NextResponse.json(
@@ -44,7 +43,14 @@ export async function GET(req) {
 
     const team = await Team.findById(user.team)
       .select("-password -__v")
-      .populate("members", "name email")
+      .populate({
+        path: "members",
+        select: "name email solvedChallenges",
+        populate: {
+          path: "solvedChallenges",
+          select: "name",
+        },
+      })
       .populate("leader", "name email");
 
     if (!team) {

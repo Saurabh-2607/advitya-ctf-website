@@ -12,13 +12,13 @@ import { broadcast } from "@/lib/socket";
 const SubmitLimiter = rateLimit({ windowMs: 60_000, max: 5 });
 
 export async function POST(req) {
+
+  const forwarded = req.headers.get("x-forwarded-for");
+  const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
+
+
   try {
-    if (!SubmitLimiter(req)) {
-      return NextResponse.json(
-        { success: false, message: "Too many attempts, try again later." },
-        { status: 429 },
-      );
-    }
+
 
     const { challengeId, flag } = await req.json();
 
@@ -49,6 +49,14 @@ export async function POST(req) {
       );
     }
 
+    const key = `${ip}:${decoded.userId}:${challengeId}`;
+
+    if (!SubmitLimiter(key)) {
+      return NextResponse.json(
+        { success: false, message: "Too many attempts." },
+        { status: 429 }
+      );
+    }
     await connectDB();
 
     const user = await User.findById(decoded.userId);
@@ -65,6 +73,7 @@ export async function POST(req) {
     ]);
 
     if (!team || !challenge) {
+
       return NextResponse.json(
         { success: false, message: "Team or Challenge not found" },
         { status: 404 },
@@ -83,6 +92,8 @@ export async function POST(req) {
     }
 
     if (flag !== challenge.flag) {
+      await new Promise((r) => setTimeout(r, 400));
+
       return NextResponse.json(
         { success: false, message: "Incorrect flag" },
         { status: 400 },
