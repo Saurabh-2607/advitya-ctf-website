@@ -11,62 +11,84 @@ import {
 } from "recharts";
 
 const COLORS = [
-  "#ef4444",
-  "#3b82f6",
-  "#22c55e",
-  "#eab308",
-  "#a855f7",
-  "#06b6d4",
-  "#f97316",
-  "#ec4899",
+  "#10b981", // Emerald 500
+  "#3b82f6", // Blue 500
+  "#f43f5e", // Rose 500
+  "#fbbf24", // Amber 400
+  "#a855f7", // Purple 500
 ];
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
 
   return (
-    <div className="bg-black/90 border border-white/20 rounded-lg px-3 py-2 text-sm">
-      <div className="text-slate-300 mb-1">Time: {label}</div>
-      {payload.map((p) => (
-        <div key={p.dataKey} style={{ color: p.color }}>
-          {p.dataKey}: {p.value}
-        </div>
-      ))}
+    <div className="bg-neutral-900 border border-neutral-800 p-3 rounded-lg shadow-xl">
+      <p className="text-neutral-500 text-xs font-mono mb-2">{label}</p>
+      <div className="flex flex-col gap-1">
+        {payload.map((p) => (
+          <div key={p.dataKey} className="flex items-center gap-3 text-xs">
+            <span style={{ color: p.color }}>●</span>
+            <span className="text-neutral-300 font-medium min-w-[80px]">{p.dataKey}</span>
+            <span className="text-white font-mono ml-auto">{p.value}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
 
 export default function MultiTeamScore({ data, teams }) {
+  if (!data || data.length === 0) return null;
+
   return (
-    <ResponsiveContainer width="100%" height={400}>
-      <LineChart data={data}>
-        <CartesianGrid stroke="#ffffff10" strokeDasharray="3 3" />
-
-        <XAxis
-          dataKey="time"
-          stroke="#cbd5e1"
-          tick={{ fontSize: 12 }}
-        />
-        <YAxis
-          stroke="#cbd5e1"
-          tick={{ fontSize: 12 }}
-        />
-
-        <Tooltip content={<CustomTooltip />} cursor={{ stroke: "#ffffff20" }} />
-
-        {teams.map((team, index) => (
-          <Line
-            key={team}
-            type="monotone"
-            dataKey={team}
-            stroke={COLORS[index % COLORS.length]}
-            strokeWidth={2}
-            dot={false}
-            connectNulls
-            isAnimationActive={true}
+    <div className="w-full h-[300px]">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={data} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+          <CartesianGrid 
+            stroke="#262626" 
+            strokeDasharray="4 4" 
+            vertical={false} 
           />
-        ))}
-      </LineChart>
-    </ResponsiveContainer>
+          
+          <XAxis
+            dataKey="time"
+            stroke="#404040"
+            tick={{ fill: "#525252", fontSize: 10, fontFamily: "monospace" }}
+            tickLine={false}
+            axisLine={false}
+            dy={10}
+            minTickGap={30}
+          />
+          
+          <YAxis
+            stroke="#404040"
+            tick={{ fill: "#525252", fontSize: 10, fontFamily: "monospace" }}
+            tickLine={false}
+            axisLine={false}
+            dx={-10}
+            width={40}
+          />
+
+          <Tooltip 
+            content={<CustomTooltip />}
+            cursor={{ stroke: "#404040", strokeWidth: 1, strokeDasharray: "4 4" }}
+          />
+
+          {teams.map((team, index) => (
+            <Line
+              key={team}
+              type="monotone"
+              dataKey={team}
+              stroke={COLORS[index % COLORS.length]}
+              strokeWidth={2}
+              dot={false}
+              activeDot={{ r: 4, strokeWidth: 0 }}
+              isAnimationActive={true}
+              animationDuration={1000}
+            />
+          ))}
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
   );
 }
