@@ -21,41 +21,34 @@ const CategoryFilter = ({
   onCategoryChange,
 }) => {
   return (
-    <div className="max-w-7xl mx-auto px-4 pb-6">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-white" />
-          <span className="text-white text-sm font-semibold">
-            Filter by category:
-          </span>
+    <div className="max-w-7xl mx-auto px-4 py-4 relative z-20">
+      <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-neutral-900/50 rounded-full border-2 border-neutral-800 text-[10px] font-bold uppercase tracking-widest text-neutral-500 shrink-0">
+          <Filter className="w-3 h-3" />
+          <span>Filter</span>
         </div>
-        <div className="flex flex-wrap gap-2">
+        
+        <div className="flex flex-wrap gap-2 flex-1">
           {categories.map((category) => (
             <button
               key={category.value}
               onClick={() => onCategoryChange(category.value)}
-              className={`px-3 py-1 text-sm font-medium rounded-lg transition-all ${
+              className={`relative px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-full border-2 transition-all duration-300 ${
                 selectedCategory === category.value
-                  ? "bg-white text-black font-semibold"
-                  : "bg-white/15 text-white hover:bg-white/70 hover:text-black font-semibold"
+                  ? "bg-neutral-200 text-black border-neutral-200"
+                  : "bg-transparent text-neutral-500 border-neutral-800 hover:border-neutral-600 hover:text-white"
               }`}
             >
               {category.label}
             </button>
           ))}
         </div>
-      </div>
 
-      <div className="flex items-center gap-2 mb-4">
-        <span className="text-white/80 font-semibold text-sm">
-          Showing {filteredChallenges.length} of {challenges.length} challenges
-          {selectedCategory !== "all" && (
-            <span className="ml-1">
-              in{" "}
-              {categories.find((cat) => cat.value === selectedCategory)?.label}
-            </span>
-          )}
-        </span>
+        <div className="ml-auto shrink-0 hidden md:block">
+           <span className="text-[10px] font-mono text-neutral-600 uppercase tracking-widest font-bold">
+              {filteredChallenges.length} Challenges Found
+           </span>
+        </div>
       </div>
     </div>
   );

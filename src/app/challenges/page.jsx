@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Trophy } from "lucide-react";
+import React, { useEffect, useState, useRef } from "react";
+import { Trophy, Filter, CheckCircle, Clock, Check } from "lucide-react";
 import { toast } from "react-toastify";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
@@ -146,11 +146,39 @@ const Challenges = () => {
           ...prev,
           [challengeId]: "",
         }));
-        toast.success(data.message, {
-          theme: "dark",
+        
+        // Custom Solved Toast
+        toast(
+          <div className="flex items-start gap-4 p-1">
+             <div className="flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center animate-in zoom-in spin-in-90 duration-300">
+                   <Check className="w-5 h-5 text-emerald-500" />
+                </div>
+             </div>
+             <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-white leading-tight mb-1">Challenge Solved!</p>
+                <p className="text-xs text-neutral-400 leading-snug break-words">{data.message}</p>
+             </div>
+          </div>
+        , {
           position: "bottom-right",
-          autoClose: 3000,
+          autoClose: 4000,
+          theme: "dark",
+          style: {
+              background: "#09090b", // neutral-950
+              border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: "16px",
+              padding: "8px",
+              boxShadow: "0 10px 40px -10px rgba(0,0,0,0.5)" 
+          },
+          progressStyle: {
+              background: "#10b981", // emerald-500
+              height: "2px"
+          },
+          hideProgressBar: false,
+          icon: false
         });
+
         setSelectedChallenge(null);
       } else {
         toast.error(data.message, {
@@ -187,13 +215,13 @@ const Challenges = () => {
 
   if (role === "sudo") {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-red-400 font-semibold text-lg mb-2">
-            Bad Access
+      <div className="min-h-screen bg-[#09090b] flex items-center justify-center relative overflow-hidden">
+        <div className="relative z-10 text-center p-8 bg-black/40 backdrop-blur-md rounded-2xl border border-white/10">
+          <div className="text-white font-bold text-xl mb-2 tracking-widest uppercase">
+            Restricted Access
           </div>
-          <div className="text-slate-400">
-            Admin Should not Enter Competition...
+          <div className="text-neutral-400 font-mono text-sm">
+            Admin accounts are prohibited from competition entry.
           </div>
         </div>
       </div>
@@ -202,11 +230,11 @@ const Challenges = () => {
 
   if (loading) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-3 border-white/10 border-t-red-500 rounded-full animate-spin mx-auto mb-4"></div>
-          <div className="text-slate-300 font-medium">
-            Loading challenges...
+      <div className="min-h-screen bg-[#09090b] flex items-center justify-center relative overflow-hidden">
+        <div className="relative z-10 flex flex-col items-center">
+          <div className="w-12 h-12 border-2 border-white/10 border-t-white rounded-full animate-spin mb-4"></div>
+          <div className="text-neutral-400 font-mono text-sm tracking-widest uppercase animate-pulse">
+            Initializing System...
           </div>
         </div>
       </div>
@@ -215,50 +243,65 @@ const Challenges = () => {
 
   if (error) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-red-400 font-semibold text-lg mb-2">Error</div>
-          <div className="text-slate-400">{error}</div>
+      <div className="min-h-screen bg-[#09090b] flex items-center justify-center relative overflow-hidden">
+        <div className="relative z-10 text-center p-8 bg-black/40 backdrop-blur-md rounded-2xl border border-white/10">
+          <div className="text-white font-bold text-xl mb-2 tracking-widest uppercase">System Error</div>
+          <div className="text-neutral-400 font-mono text-sm">{error}</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="">
+    <div className="min-h-screen bg-[#09090b] text-white relative overflow-hidden">
+      
       {isAuthenticated && (
-        <>
-          <div className="">
-            <div className="max-w-7xl mx-auto px-4 py-6">
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 lg:gap-6">
-                <h1 className="space-y-1 text-3xl font-bold text-white">
-                  Challenges
-                </h1>
+        <div className="relative z-10 pb-20">
+          {/* Header Section */}
+          <div className="pt-6 pb-2">
+            <div className="max-w-7xl mx-auto px-4">
+              <div className="flex flex-row items-center justify-between gap-4">
+                <div>
+                  <h1 className="text-2xl font-bold tracking-tight text-white">
+                    Challenges
+                  </h1>
+                </div>
 
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-2 bg-white text-black px-4 py-2 rounded-4xl text-sm font-medium ">
-                    <Trophy className="w-4 h-4 " />
-                    <span>{solvedChallenges.size} solved</span>
-                  </span>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3 bg-neutral-900 border-2 border-neutral-800 pr-5 pl-1.5 py-1.5 rounded-full">
+                    <div className="p-2 bg-neutral-800 rounded-full border border-neutral-700">
+                      <Trophy className="w-3.5 h-3.5 text-neutral-200" />
+                    </div>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-[11px] text-neutral-500 font-bold tracking-widest uppercase">
+                        Solved
+                      </span>
+                      <span className="text-xl font-bold font-mono text-white leading-none">
+                        {solvedChallenges.size}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <CategoryFilter
-            selectedCategory={selectedCategory}
-            filteredChallenges={filteredChallenges}
-            challenges={challenges}
-            onCategoryChange={handleCategoryChange}
-          />
+          <div className="pt-4">
+            <CategoryFilter
+              selectedCategory={selectedCategory}
+              filteredChallenges={filteredChallenges}
+              challenges={challenges}
+              onCategoryChange={handleCategoryChange}
+            />
 
-          <ChallengeGrid
-            challenges={filteredChallenges}
-            selectedCategory={selectedCategory}
-            solvedChallenges={solvedChallenges}
-            categories={categories}
-            onChallengeClick={openChallengeModal}
-          />
+            <ChallengeGrid
+              challenges={filteredChallenges}
+              selectedCategory={selectedCategory}
+              solvedChallenges={solvedChallenges}
+              categories={categories}
+              onChallengeClick={openChallengeModal}
+            />
+          </div>
 
           <ChallengeModal
             challenge={selectedChallenge}
@@ -278,7 +321,7 @@ const Challenges = () => {
             onClose={closeChallengeModal}
             submittingFlag={submittingFlag}
           />
-        </>
+        </div>
       )}
     </div>
   );
