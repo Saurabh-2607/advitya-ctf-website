@@ -81,145 +81,166 @@ export default function CreateTeam({ onCreated }) {
   };
 
   return (
-    <div className="text-white flex items-center justify-center p-4">
-      <div className="relative w-full max-w-md">
+    <div className="w-full max-w-lg mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+      
+      {/* Card */}
+      <div className="overflow-hidden rounded-3xl border border-neutral-800 bg-neutral-900/40 backdrop-blur-md p-8 shadow-2xl">
+        
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-semibold text-slate-100 tracking-tight">
-            Create Team
-          </h1>
-          <p className="text-gray-400 mt-1">Create your team for the CTF</p>
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-neutral-800 border border-neutral-700 flex items-center justify-center shadow-lg">
+                <Shield className="w-8 h-8 text-neutral-300" />
+            </div>
+            <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">Create New Team</h2>
+            <p className="text-neutral-500 text-sm">Establish your squad and start competing</p>
         </div>
 
-        {/* Card */}
-        <div className="bg-[#191919] border border-white/20 rounded-2xl p-8 shadow-2xl">
-          {/* Icon */}
-          <div className="flex items-center justify-center mb-6">
-            <div className="flex items-center justify-center w-16 h-16 rounded-full bg-white/10 border border-white/20">
-              <Shield className="h-8 w-8 text-white" />
-            </div>
-          </div>
-
-          {/* Form */}
-          <div className="space-y-6">
-            {/* Team Name */}
-            <div>
-              <label className="flex text-sm font-medium text-gray-300 mb-2">
-                Team Name
-              </label>
-              <div className="relative">
-                <Users className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type="text"
-                  value={teamName}
-                  onChange={(e) => setTeamName(e.target.value)}
-                  placeholder="My Awesome Team"
-                  className="
-                    w-full pl-12 pr-4 py-3
-                    bg-white/10
-                    border border-white/20
-                    rounded-lg
-                    text-white
-                    placeholder-gray-400
-                    focus:outline-none
-                    focus:border-white/40
-                  "
-                  disabled={loading}
-                />
-              </div>
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="flex text-sm font-medium text-gray-300 mb-2">
-                Team Password
-              </label>
-
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full pl-12 pr-12 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-white/40"
-                  disabled={loading}
-                />
-
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5" />
-                  ) : (
-                    <Eye className="h-5 w-5" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            {/* Confirm Password */}
-            <div>
-              <label className="flex text-sm font-medium text-gray-300 mb-2">
-                Confirm Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full pl-12 pr-12 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-white/40"
-                  disabled={loading}
-                />
-
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300"
-                >
-                  {showConfirmPassword ? (
-                    <EyeOff className="h-5 w-5" />
-                  ) : (
-                    <Eye className="h-5 w-5" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <label className="flex text-lg text-red-600 mb-4">
-              Remember this password, as you'll need it to invite members!
+        {/* Form */}
+        <div className="space-y-6">
+          {/* Team Name */}
+          <div className="space-y-2 text-left">
+            <label className="text-xs uppercase tracking-widest font-bold text-neutral-500 ml-1">
+              Team Name
             </label>
-
-            {/* Action */}
-            <button
-              onClick={createTeam}
-              disabled={loading}
-              className="
-                w-full flex items-center justify-center gap-2
-                py-3
-                rounded-lg
-                bg-white
-                text-black
-                font-medium
-                hover:bg-gray-200
-                disabled:opacity-50
-                transition
-              "
-            >
-              {loading ? (
-                <span>Creating...</span>
-              ) : (
-                <>
-                  <Plus className="h-4 w-4" />
-                  Create Team
-                </>
-              )}
-            </button>
+            <div className="relative group">
+              <Users className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-neutral-500 group-focus-within:text-white transition-colors" />
+              <input
+                type="text"
+                value={teamName}
+                onChange={(e) => setTeamName(e.target.value)}
+                placeholder="e.g. CyberPunks"
+                className="
+                  w-full pl-12 pr-4 py-4
+                  bg-neutral-900/50
+                  border border-neutral-800
+                  rounded-xl
+                  text-white
+                  placeholder-neutral-600
+                  outline-none
+                  focus:border-neutral-600
+                  focus:bg-neutral-900
+                  transition-all duration-300
+                "
+                disabled={loading}
+              />
+            </div>
           </div>
+
+          {/* Password */}
+          <div className="space-y-2 text-left">
+            <label className="text-xs uppercase tracking-widest font-bold text-neutral-500 ml-1">
+              Team Password
+            </label>
+            <div className="relative group">
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-neutral-500 group-focus-within:text-white transition-colors" />
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Create a strong password"
+                className="
+                  w-full pl-12 pr-12 py-4
+                  bg-neutral-900/50
+                  border border-neutral-800
+                  rounded-xl
+                  text-white
+                  placeholder-neutral-600
+                  outline-none
+                  focus:border-neutral-600
+                  focus:bg-neutral-900
+                  transition-all duration-300
+                "
+                disabled={loading}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white transition-colors"
+                tabIndex="-1"
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Confirm Password */}
+          <div className="space-y-2 text-left">
+            <label className="text-xs uppercase tracking-widest font-bold text-neutral-500 ml-1">
+              Confirm Password
+            </label>
+            <div className="relative group">
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-neutral-500 group-focus-within:text-white transition-colors" />
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Re-enter password"
+                className="
+                  w-full pl-12 pr-12 py-4
+                  bg-neutral-900/50
+                  border border-neutral-800
+                  rounded-xl
+                  text-white
+                  placeholder-neutral-600
+                  outline-none
+                  focus:border-neutral-600
+                  focus:bg-neutral-900
+                  transition-all duration-300
+                "
+                disabled={loading}
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white transition-colors"
+                tabIndex="-1"
+              >
+                {showConfirmPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          <div className="rounded-lg bg-neutral-800/50 border border-neutral-800 p-3 flex items-start gap-3">
+             <div className="mt-0.5 text-neutral-400">
+                <Shield className="w-4 h-4" /> 
+             </div>
+             <p className="text-xs text-neutral-400 leading-relaxed">
+                Save this password securely. You will need to share it with your teammates so they can join your squad.
+             </p>
+          </div>
+
+          {/* Action */}
+          <button
+            onClick={createTeam}
+            disabled={loading}
+            className="
+              w-full py-4 rounded-xl
+              bg-white text-black font-bold
+              hover:bg-neutral-200
+              disabled:opacity-50 disabled:cursor-not-allowed
+              transform active:scale-[0.98]
+              transition-all duration-200
+              mt-2
+              shadow-lg shadow-white/5
+            "
+          >
+            {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                    <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></span>
+                    Creating...
+                </span>
+            ) : (
+                "Create Team"
+            )}
+          </button>
         </div>
       </div>
     </div>

@@ -56,79 +56,90 @@ const page = () => {
     }
   };
 
-  if (loading) {
+if (loading) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center text-gray-400">
-        Loading MyTeam...
+      <div className="min-h-[80vh] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-neutral-800 border-t-neutral-400 rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="text-neutral-500 font-mono text-xs uppercase tracking-widest">Checking Team Status...</div>
+        </div>
       </div>
     );
   }
 
   if (team) {
-    return <MyTeam />;
+    return <MyTeam team={team} />;
   }
 
   return (
-    <div className="max-w-xl mx-auto px-4 py-10 text-center space-y-8">
+    <div className="max-w-4xl mx-auto px-4 py-8 min-h-[80vh] flex flex-col items-center justify-center">
       {/* MENU */}
       {view === "menu" && (
-        <div className="flex flex-col justify-center gap-4">
-          <h1 className="text-3xl font-bold text-slate-100">
-            Create or Join Team
-          </h1>
-          {/* Join Team */}
-          <button
-            onClick={() => setView("join")}
-            className="
-              flex items-center gap-3
-              px-6 py-4
-              rounded-xl
-              bg-white/5
-              border border-white/20
-              text-white
-              hover:bg-white/10
-              hover:border-white/40
-              transition-all
-              group
-            "
-          >
-            <div className="p-2 rounded-lg bg-white/10 group-hover:bg-white/20 transition">
-              <Users className="w-5 h-5" />
+        <div className="w-full max-w-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="text-center mb-10">
+                <h1 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
+                    Team Selection
+                </h1>
+                <p className="text-neutral-400 max-w-md mx-auto">
+                    Join an existing squad or establish a new team to compete in the challenges.
+                </p>
             </div>
 
-            <div className="text-left">
-              <div className="font-semibold">Join Team</div>
-              <div className="text-xs text-gray-400">
-                Use invite code & password
-              </div>
-            </div>
-          </button>
+            <div className="grid md:grid-cols-2 gap-6">
+                {/* Join Team */}
+                <button
+                    onClick={() => setView("join")}
+                    className="
+                        group relative overflow-hidden
+                        p-8 rounded-3xl
+                        bg-neutral-900/40 border border-neutral-800
+                        hover:bg-neutral-800/40 hover:border-neutral-700
+                        transition-all duration-300
+                        text-left
+                    "
+                >
+                    <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <Users className="w-24 h-24 rotate-12" />
+                    </div>
+                    
+                    <div className="relative z-10">
+                        <div className="w-12 h-12 rounded-2xl bg-neutral-800 border border-neutral-700 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                            <Users className="w-6 h-6 text-neutral-300" />
+                        </div>
+                        <h3 className="text-xl font-bold text-white mb-2">Join Existing Team</h3>
+                        <p className="text-sm text-neutral-500 leading-relaxed font-medium">
+                            Enter an invite code to join your teammates and start solving.
+                        </p>
+                    </div>
+                </button>
 
-          {/* Create Team */}
-          <button
-            onClick={() => setView("create")}
-            className="
-              flex items-center gap-3
-              px-6 py-4
-              rounded-xl
-              bg-white/5
-              border border-white/20
-              text-white
-              hover:bg-white/10
-              hover:border-white/40
-              transition-all
-              group
-            "
-          >
-            <div className="p-2 rounded-lg bg-white/10 group-hover:bg-white/20 transition">
-              <PlusCircle className="w-5 h-5" />
-            </div>
+                {/* Create Team */}
+                <button
+                    onClick={() => setView("create")}
+                    className="
+                        group relative overflow-hidden
+                        p-8 rounded-3xl
+                        bg-neutral-900/40 border border-neutral-800
+                        hover:bg-neutral-800/40 hover:border-neutral-700
+                        transition-all duration-300
+                        text-left
+                    "
+                >
+                    <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <PlusCircle className="w-24 h-24 rotate-12" />
+                    </div>
 
-            <div className="text-left">
-              <div className="font-semibold">Create Team</div>
-              <div className="text-xs text-gray-400">Become a team captain</div>
+                    <div className="relative z-10">
+                        <div className="w-12 h-12 rounded-2xl bg-white border border-neutral-200 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)]">
+                            <PlusCircle className="w-6 h-6 text-black" />
+                        </div>
+                        <h3 className="text-xl font-bold text-white mb-2">Create New Team</h3>
+                        <p className="text-sm text-neutral-500 leading-relaxed font-medium">
+                            Start a new team, invite members, and lead them to victory.
+                        </p>
+                    </div>
+                </button>
             </div>
-          </button>
         </div>
       )}
 
