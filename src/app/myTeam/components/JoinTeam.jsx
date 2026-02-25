@@ -91,134 +91,129 @@ export default function JoinTeam({ onJoined }) {
   };
 
   return (
-    <div className="text-white flex items-center justify-center">
-      <div className="relative w-full max-w-md">
+    <div className="w-full max-w-lg mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+      
+      {/* Card */}
+      <div className="overflow-hidden rounded-3xl border border-neutral-800 bg-neutral-900/40 backdrop-blur-md p-8 shadow-2xl">
+        
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-semibold text-slate-100 tracking-tight">
-            Join Team
-          </h1>
-          <p className="text-gray-400 mt-1">
-            Select a team and enter the password
-          </p>
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-neutral-800 border border-neutral-700 flex items-center justify-center shadow-lg">
+                <Users className="w-8 h-8 text-neutral-300" />
+            </div>
+            <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">Join Existing Team</h2>
+            <p className="text-neutral-500 text-sm">Select your team from the list and enter access credentials</p>
         </div>
 
-        {/* Card */}
-        <div className="bg-[#191919] border border-white/20 rounded-2xl p-8 shadow-2xl">
-          {/* Icon */}
-          <div className="flex items-center justify-center mb-6">
-            <div className="flex items-center justify-center w-16 h-16 rounded-full bg-white/10 border border-white/20">
-              <Users className="h-8 w-8 text-white" />
-            </div>
-          </div>
-
-          {/* Form */}
-          <div className="space-y-6">
-            {/* Team Dropdown */}
-            <div>
-              <label className="flex text-sm font-medium text-gray-300 mb-2">
-                Select Team
-              </label>
-              <div className="relative">
-                <Users className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <select
-                  value={selectedTeam}
-                  onChange={(e) => setSelectedTeam(e.target.value)}
-                  className="
-                    w-full pl-12 pr-4 py-3
-                    bg-white/10
-                    border border-white/20
-                    rounded-lg
-                    text-white
-                    focus:outline-none
-                    focus:border-white/40
-                    
-                  "
-                >
+        {/* Form */}
+        <div className="space-y-6">
+          {/* Team Dropdown */}
+          <div className="space-y-2 text-left">
+            <label className="text-xs uppercase tracking-widest font-bold text-neutral-500 ml-1">
+              Select Team
+            </label>
+            <div className="relative group">
+              <Users className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-neutral-500 group-focus-within:text-white transition-colors" />
+              <select
+                value={selectedTeam}
+                onChange={(e) => setSelectedTeam(e.target.value)}
+                className="
+                  w-full pl-12 pr-4 py-4
+                  bg-neutral-900/50
+                  border border-neutral-800
+                  rounded-xl
+                  text-white
+                  outline-none
+                  focus:border-neutral-600
+                  focus:bg-neutral-900
+                  transition-all duration-300
+                  appearance-none
+                "
+              >
+                <option value="" disabled className="bg-neutral-900 text-neutral-500">
+                    Select a team...
+                </option>
+                {teams.map((team) => (
                   <option
-                    className="bg-black text-white text-lg "
-                    value=""
-                    disabled
+                    key={team}
+                    value={team}
+                    className="bg-neutral-900 text-white"
                   >
-                    -- Select a team --
+                    {team}
                   </option>
-                  {teams.map((team) => (
-                    <option
-                      key={team}
-                      value={team}
-                      className="bg-black text-white text-lg"
-                    >
-                      {team}
-                    </option>
-                  ))}
-                </select>
+                ))}
+              </select>
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                <svg className="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
               </div>
             </div>
-
-            {/* Password */}
-            <div>
-              <label className="flex text-sm font-medium text-gray-300 mb-2">
-                Team Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="
-                    w-full pl-12 pr-12 py-3
-                    bg-white/10
-                    border border-white/20
-                    rounded-lg
-                    text-white
-                    placeholder-gray-400
-                    focus:outline-none
-                    focus:border-white/40
-                  "
-                  disabled={loading}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5" />
-                  ) : (
-                    <Eye className="h-5 w-5" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            {/* Action */}
-            <button
-              onClick={joinTeam}
-              disabled={loading}
-              className="
-                w-full flex items-center justify-center gap-2
-                py-3
-                rounded-lg
-                bg-white
-                text-black
-                font-medium
-                hover:bg-gray-200
-                disabled:opacity-50
-                transition
-              "
-            >
-              {loading ? (
-                <span>Joining...</span>
-              ) : (
-                <>
-                  <LogIn className="h-4 w-4" />
-                  Join Team
-                </>
-              )}
-            </button>
           </div>
+
+          {/* Password */}
+          <div className="space-y-2 text-left">
+            <label className="text-xs uppercase tracking-widest font-bold text-neutral-500 ml-1">
+              Team Password
+            </label>
+            <div className="relative group">
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-neutral-500 group-focus-within:text-white transition-colors" />
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter team password"
+                className="
+                  w-full pl-12 pr-12 py-4
+                  bg-neutral-900/50
+                  border border-neutral-800
+                  rounded-xl
+                  text-white
+                  placeholder-neutral-600
+                  outline-none
+                  focus:border-neutral-600
+                  focus:bg-neutral-900
+                  transition-all duration-300
+                "
+                disabled={loading}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white transition-colors"
+                tabIndex="-1"
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Action */}
+          <button
+            onClick={joinTeam}
+            disabled={loading}
+            className="
+              w-full py-4 rounded-xl
+              bg-white text-black font-bold
+              hover:bg-neutral-200
+              disabled:opacity-50 disabled:cursor-not-allowed
+              transform active:scale-[0.98]
+              transition-all duration-200
+              mt-2
+              shadow-lg shadow-white/5
+            "
+          >
+            {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                    <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></span>
+                    Joining...
+                </span>
+            ) : (
+                "Join Team"
+            )}
+          </button>
         </div>
       </div>
     </div>

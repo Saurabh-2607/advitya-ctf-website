@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import {
   Globe,
   Lock,
@@ -12,17 +11,12 @@ import {
   Shield,
   Target,
   Calendar,
-  ArrowRight,
-  Github,
   ChevronRight,
   Flag,
-  Clock,
-  MapPin,
   Terminal,
   ExternalLink,
   Code,
   ShieldCheck,
-  Linkedin,
   Sparkles,
 } from "lucide-react";
 
@@ -37,8 +31,10 @@ function Reveal({ children, className = "", delay = 0, direction = "up" }) {
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
-      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+      ([entry]) => {
+        if (entry.isIntersecting) setVisible(true);
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" },
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
@@ -54,8 +50,11 @@ function Reveal({ children, className = "", delay = 0, direction = "up" }) {
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${visible ? "opacity-100 translate-y-0 translate-x-0 scale-100" : `opacity-0 ${transforms[direction]} scale-[0.97]`
-        } ${className}`}
+      className={`transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        visible
+          ? "opacity-100 translate-y-0 translate-x-0 scale-100"
+          : `opacity-0 ${transforms[direction]} scale-[0.97]`
+      } ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {children}
@@ -66,15 +65,16 @@ function Reveal({ children, className = "", delay = 0, direction = "up" }) {
 /* ── Animated border trail card ── */
 function TrailCard({ children, className = "", duration = "6s" }) {
   return (
-    <div className={`relative overflow-hidden rounded-2xl p-px ${className}`}>
+    <div
+      className={`relative overflow-hidden rounded-3xl p-px bg-[#050509] ${className}`}
+    >
       <div
-        className="absolute inset-0 animate-trail"
+        className="absolute inset-0 animate-trail [background:conic-gradient(from_var(--angle,0deg)_at_50%_50%,transparent_85%,rgba(255,255,255,0.5))]"
         style={{
           "--duration": duration,
-          background: "conic-gradient(from var(--angle, 0deg) at 50% 50%, transparent 85%, rgba(255,255,255,0.5))",
         }}
       />
-      <div className="relative h-full w-full rounded-[15px] bg-[#0f0f13] overflow-hidden">
+      <div className="relative h-full w-full rounded-3xl bg-[#0f0f13] overflow-hidden">
         {children}
       </div>
     </div>
@@ -98,7 +98,10 @@ function MatrixRain() {
       canvas.width = canvas.parentElement.offsetWidth;
       canvas.height = canvas.parentElement.offsetHeight;
       columns = Math.floor(canvas.width / fontSize);
-      drops = Array(columns).fill(1);
+      drops = [];
+      for (let i = 0; i < columns; i++) {
+        drops[i] = Math.floor(Math.random() * -(canvas.height / fontSize));
+      }
     }
     resize();
     window.addEventListener("resize", resize);
@@ -130,11 +133,18 @@ function MatrixRain() {
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 pointer-events-none z-0"
-      style={{ opacity: 0.4 }}
-    />
+    <div
+      className="absolute inset-0 -top-20 pointer-events-none z-0"
+      style={{
+        height: "calc(100% + 5rem)",
+        WebkitMaskImage:
+          "linear-gradient(to bottom, transparent 0%, black 40%, black 80%, transparent 100%)",
+        maskImage:
+          "linear-gradient(to bottom, transparent 0%, black 40%, black 80%, transparent 100%)",
+      }}
+    >
+      <canvas ref={canvasRef} className="absolute inset-0 opacity-40" />
+    </div>
   );
 }
 
@@ -187,21 +197,25 @@ function CountdownTimer() {
   return (
     <div className="flex flex-col text-left">
       <p className="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-bold mb-4">
-        {status === "upcoming" ? "CTF BEGINS IN" : status === "active" ? "TIME LEFT" : "CTF HAS ENDED"}
+        {status === "upcoming"
+          ? "CTF BEGINS IN"
+          : status === "active"
+            ? "TIME LEFT"
+            : "CTF HAS ENDED"}
       </p>
       <div className="flex items-center gap-2 sm:gap-4">
         {units.map((u, i) => (
           <div key={u.label + status} className="flex flex-col items-center">
             <div className="flex items-center gap-2 sm:gap-4">
-              <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-2xl bg-[#111113] border border-white/5 flex items-center justify-center shadow-inner group">
+              <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-3xl bg-[#111113] border border-white/5 flex items-center justify-center shadow-inner group">
                 <span className="text-xl sm:text-3xl font-black text-white tracking-widest tabular-nums">
                   {String(u.val).padStart(2, "0")}
                 </span>
               </div>
               {i < 3 && (
                 <div className="flex flex-col gap-1.5 opacity-30 px-1">
-                  <div className="w-1 h-1 rounded-full bg-white" />
-                  <div className="w-1 h-1 rounded-full bg-white" />
+                  <div className="w-1 h-1 rounded-3xl bg-white" />
+                  <div className="w-1 h-1 rounded-3xl bg-white" />
                 </div>
               )}
             </div>
@@ -233,7 +247,11 @@ function TypingTerminal() {
 
   useEffect(() => {
     if (lineIdx >= terminalLines.length) {
-      const t = setTimeout(() => { setDisplayLines([]); setLineIdx(0); setCharIdx(0); }, 3000);
+      const t = setTimeout(() => {
+        setDisplayLines([]);
+        setLineIdx(0);
+        setCharIdx(0);
+      }, 3000);
       return () => clearTimeout(t);
     }
     const line = terminalLines[lineIdx];
@@ -242,20 +260,31 @@ function TypingTerminal() {
       const t = setTimeout(() => setCharIdx((c) => c + 1), speed);
       return () => clearTimeout(t);
     } else {
-      const t = setTimeout(() => { setDisplayLines((p) => [...p, line]); setLineIdx((l) => l + 1); setCharIdx(0); }, 500);
+      const t = setTimeout(() => {
+        setDisplayLines((p) => [...p, line]);
+        setLineIdx((l) => l + 1);
+        setCharIdx(0);
+      }, 500);
       return () => clearTimeout(t);
     }
   }, [lineIdx, charIdx]);
 
-  const currentLine = lineIdx < terminalLines.length ? terminalLines[lineIdx] : "";
+  const currentLine =
+    lineIdx < terminalLines.length ? terminalLines[lineIdx] : "";
   const typingText = currentLine.slice(0, charIdx);
 
   const lineColor = (l) =>
-    l.startsWith("4DV1TY426{") ? "text-green-400 font-bold" :
-      l.startsWith("[") ? "text-gray-400" : "text-gray-500";
+    l.startsWith("4DV1TY426{")
+      ? "text-green-400 font-bold"
+      : l.startsWith("[")
+        ? "text-gray-400"
+        : "text-gray-500";
 
   return (
-    <TrailCard className="w-[320px] sm:w-[400px] md:w-[480px] mx-auto" duration="8s">
+    <TrailCard
+      className="w-[320px] sm:w-[400px] md:w-[480px] mx-auto"
+      duration="8s"
+    >
       <div className="text-left flex flex-col h-[260px]">
         {/* title bar */}
         <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/5 bg-[#121215]">
@@ -269,7 +298,9 @@ function TypingTerminal() {
         {/* output */}
         <div className="p-5 font-mono text-xs sm:text-sm leading-relaxed flex-1 bg-[#0a0a0c]">
           {displayLines.map((line, i) => (
-            <div key={i} className={lineColor(line)}>{line}</div>
+            <div key={i} className={lineColor(line)}>
+              {line}
+            </div>
           ))}
           {lineIdx < terminalLines.length && (
             <div className={lineColor(currentLine)}>
@@ -297,11 +328,18 @@ function TiltCard({ children, className = "" }) {
   }, []);
 
   const handleLeave = useCallback(() => {
-    if (ref.current) ref.current.style.transform = "perspective(600px) rotateX(0) rotateY(0) scale3d(1,1,1)";
+    if (ref.current)
+      ref.current.style.transform =
+        "perspective(600px) rotateX(0) rotateY(0) scale3d(1,1,1)";
   }, []);
 
   return (
-    <div ref={ref} className={`transition-transform duration-200 ease-out ${className}`} onMouseMove={handleMove} onMouseLeave={handleLeave}>
+    <div
+      ref={ref}
+      className={`transition-transform duration-200 ease-out ${className}`}
+      onMouseMove={handleMove}
+      onMouseLeave={handleLeave}
+    >
       {children}
     </div>
   );
@@ -317,14 +355,24 @@ function CustomCursor() {
   const raf = useRef(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.matchMedia("(hover: none)").matches) return;
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(hover: none)").matches
+    )
+      return;
 
     const onMove = (e) => {
       mouse.current = { x: e.clientX, y: e.clientY };
     };
 
-    const onEnter = () => { hovering.current = true; ringRef.current?.classList.add("hovering"); };
-    const onLeave = () => { hovering.current = false; ringRef.current?.classList.remove("hovering"); };
+    const onEnter = () => {
+      hovering.current = true;
+      ringRef.current?.classList.add("hovering");
+    };
+    const onLeave = () => {
+      hovering.current = false;
+      ringRef.current?.classList.remove("hovering");
+    };
 
     const animate = () => {
       const dx = mouse.current.x - ring.current.x;
@@ -343,20 +391,24 @@ function CustomCursor() {
     };
 
     window.addEventListener("mousemove", onMove);
-    document.querySelectorAll("a, button, [role='button'], input, textarea, select").forEach((el) => {
-      el.addEventListener("mouseenter", onEnter);
-      el.addEventListener("mouseleave", onLeave);
-    });
+    document
+      .querySelectorAll("a, button, [role='button'], input, textarea, select")
+      .forEach((el) => {
+        el.addEventListener("mouseenter", onEnter);
+        el.addEventListener("mouseleave", onLeave);
+      });
 
     raf.current = requestAnimationFrame(animate);
 
     return () => {
       window.removeEventListener("mousemove", onMove);
       cancelAnimationFrame(raf.current);
-      document.querySelectorAll("a, button, [role='button'], input, textarea, select").forEach((el) => {
-        el.removeEventListener("mouseenter", onEnter);
-        el.removeEventListener("mouseleave", onLeave);
-      });
+      document
+        .querySelectorAll("a, button, [role='button'], input, textarea, select")
+        .forEach((el) => {
+          el.removeEventListener("mouseenter", onEnter);
+          el.removeEventListener("mouseleave", onLeave);
+        });
     };
   }, []);
 
@@ -372,14 +424,28 @@ function CustomCursor() {
 function HiddenFlag() {
   const [found, setFound] = useState(false);
   const [clicks, setClicks] = useState(0);
-  const handleClick = () => { const n = clicks + 1; setClicks(n); if (n >= 5) setFound(true); };
+  const handleClick = () => {
+    const n = clicks + 1;
+    setClicks(n);
+    if (n >= 5) setFound(true);
+  };
 
   return (
     <span className="relative inline-block">
-      <span onClick={handleClick} className="cursor-pointer select-none" title={found ? "Flag found!" : "..."} role="button" tabIndex={0}>💀</span>
+      <span
+        onClick={handleClick}
+        className="cursor-pointer select-none"
+        title={found ? "Flag found!" : "..."}
+        role="button"
+        tabIndex={0}
+      >
+        💀
+      </span>
       {found && (
-        <span className="absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap glass-card px-3 py-1 border border-white/20 rounded-lg animate-fadeInUp z-50">
-          <span className="font-mono text-xs text-green-400 font-bold">{"CTF{y0u_f0und_th3_34st3r_3gg}"}</span>
+        <span className="absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap glass-card px-3 py-1 border border-white/20 rounded-3xl animate-fadeInUp z-50">
+          <span className="font-mono text-xs text-white font-bold">
+            {"CTF{y0u_f0und_th3_34st3r_3gg}"}
+          </span>
         </span>
       )}
     </span>
@@ -391,53 +457,177 @@ function HiddenFlag() {
    ══════════════════════════════════════════════ */
 
 const categories = [
-  { name: "Web Exploitation", icon: Globe, desc: "Break through web app defenses, exploit XSS, SQLi, and SSRF vulnerabilities." },
-  { name: "Cryptography", icon: Lock, desc: "Crack ciphers, break encryption, and unravel mathematical puzzles." },
-  { name: "Pwn / Binary", icon: Bug, desc: "Stack smashing, ROP chains, heap exploits — master binary exploitation." },
-  { name: "Reverse Engineering", icon: Binary, desc: "Disassemble, decompile, and dissect binaries to uncover hidden logic." },
-  { name: "Forensics", icon: Search, desc: "Analyze disk images, packet captures, and memory dumps for evidence." },
-  { name: "OSINT", icon: Shield, desc: "Gather intelligence from public sources and connect the dots." },
+  {
+    name: "Web Exploitation",
+    icon: Globe,
+    desc: "Break through web app defenses, exploit XSS, SQLi, and SSRF vulnerabilities.",
+  },
+  {
+    name: "Cryptography",
+    icon: Lock,
+    desc: "Crack ciphers, break encryption, and unravel mathematical puzzles.",
+  },
+  {
+    name: "Pwn / Binary",
+    icon: Bug,
+    desc: "Stack smashing, ROP chains, heap exploits — master binary exploitation.",
+  },
+  {
+    name: "Reverse Engineering",
+    icon: Binary,
+    desc: "Disassemble, decompile, and dissect binaries to uncover hidden logic.",
+  },
+  {
+    name: "Forensics",
+    icon: Search,
+    desc: "Analyze disk images, packet captures, and memory dumps for evidence.",
+  },
+  {
+    name: "OSINT",
+    icon: Shield,
+    desc: "Gather intelligence from public sources and connect the dots.",
+  },
 ];
 
 const events = [
-  { title: "Hackathon — Phase 1: Ideation", date: "Feb 12–14, 2026", desc: "Submit your ideas and form your team. Innovation starts here." },
-  { title: "Hackathon — Phase 2: The Build", date: "Feb 15–25, 2026", desc: "Build your project and push limits. Mentorship and guidance provided." },
-  { title: "Treasure Hunt", date: "Feb 26, 2026 • 10 AM – 4 PM", desc: "Crack cryptic clues, chase hidden maps, and race against time. Venue: ARCH-002." },
-  { title: "CTF — Capture The Flag", date: "Feb 27, 2026 • 10 AM – 4 PM", desc: "Battle Web, Pwn, Crypto & AI/ML challenges. Crack flags and dominate the leaderboard. Venue: AR-002." },
-  { title: "Hackathon — Phase 3: The Showdown", date: "Feb 27, 2026", desc: "Final presentations and judgment. Winners get an exclusive internship opportunity!" },
+  {
+    title: "Hackathon — Phase 1: Ideation",
+    date: "Feb 12–14, 2026",
+    desc: "Submit your ideas and form your team. Innovation starts here.",
+    startDate: "2026-02-12T00:00:00+05:30",
+    endDate: "2026-02-14T23:59:59+05:30"
+  },
+  {
+    title: "Hackathon — Phase 2: The Build",
+    date: "Feb 15–25, 2026",
+    desc: "Build your project and push limits. Mentorship and guidance provided.",
+    startDate: "2026-02-15T00:00:00+05:30",
+    endDate: "2026-02-25T23:59:59+05:30"
+  },
+  {
+    title: "Treasure Hunt",
+    date: "Feb 26, 2026 • 10 AM – 4 PM",
+    desc: "Crack cryptic clues, chase hidden maps, and race against time. Venue: ARCH-002.",
+    startDate: "2026-02-26T10:00:00+05:30",
+    endDate: "2026-02-26T16:00:00+05:30"
+  },
+  {
+    title: "CTF — Capture The Flag",
+    date: "Feb 27, 2026 • 10 AM – 4 PM",
+    desc: "Battle Web, Pwn, Crypto & AI/ML challenges. Crack flags and dominate the leaderboard. Venue: AR-002.",
+    startDate: "2026-02-27T10:00:00+05:30",
+    endDate: "2026-02-27T16:00:00+05:30"
+  },
+  {
+    title: "Hackathon — Phase 3: The Showdown",
+    date: "Feb 27, 2026",
+    desc: "Final presentations and judgment. Winners get an exclusive internship opportunity!",
+    startDate: "2026-02-27T00:00:00+05:30",
+    endDate: "2026-02-27T23:59:59+05:30"
+  },
 ];
 
 const clubLinks = [
   { name: "OWASP Chapter VITB", href: "https://instagram.com/owaspvitbhopal" },
-  { name: "Null Student Chapter VITB", href: "https://instagram.com/null_vitbhopal" },
+  {
+    name: "Null Student Chapter VITB",
+    href: "https://instagram.com/null_vitbhopal",
+  },
   { name: "K.A.V.A.C.H", href: "https://instagram.com/kavach_vitb" },
   { name: "WiCys VIT Bhopal", href: "https://instagram.com/wicys_vitbhopal" },
-  { name: "Cyber Warriors Club", href: "https://instagram.com/cyberwarriors_vitb" },
+  {
+    name: "Cyber Warriors Club",
+    href: "https://instagram.com/cyberwarriors_vitb",
+  },
 ];
 
 /* ── Team data ── */
 const challengeDevs = [
-  { name: "0xcafebabe", link: "https://www.linkedin.com/in/das-somnath/", tags: ["REV", "BIN", "CRYPTO"] },
+  {
+    name: "0xcafebabe",
+    link: "https://www.linkedin.com/in/das-somnath/",
+    tags: ["REV", "BIN", "CRYPTO"],
+  },
   { name: "mindxflayer", link: "#", tags: ["OSINT", "AI/ML"] },
-  { name: "wrongmanoff", link: "https://github.com/wrongmanoff", tags: ["REVERSE", "OSINT"] },
+  {
+    name: "wrongmanoff",
+    link: "https://github.com/wrongmanoff",
+    tags: ["REVERSE", "OSINT"],
+  },
   { name: "pphreak_1001", link: "#", tags: ["WEB", "OSINT"] },
-  { name: "Headbanger", link: "https://www.srbh.site/", tags: ["WEB", "OSINT"] },
-  { name: "craycray", link: "https://www.linkedin.com/in/akshat-singh-1311ca/", tags: ["CRYPTO", "REVERSE", "DFIR"] },
-  { name: "H34D_L355_", link: "https://github.com/DhyaanKanoja11", tags: ["WEB", "OSINT"] },
+  {
+    name: "Headbanger",
+    link: "https://www.srbh.site/",
+    tags: ["WEB", "OSINT"],
+  },
+  {
+    name: "craycray",
+    link: "https://www.linkedin.com/in/akshat-singh-1311ca/",
+    tags: ["CRYPTO", "REVERSE", "DFIR"],
+  },
+  {
+    name: "H34D_L355_",
+    link: "https://github.com/DhyaanKanoja11",
+    tags: ["WEB", "OSINT"],
+  },
   { name: "rootk3", link: "https://github.com/rootk3c", tags: ["WEB"] },
-  { name: "AnkitS01", link: "https://linkedin.com/in/ankit-s01", tags: ["CRYPTO"] },
-  { name: "Ahundred21", link: "https://github.com/saimerit", tags: ["CRYPTO", "REVERSE"] },
-  { name: "Mr0x00", link: "https://www.linkedin.com/in/snehilshourya101", tags: ["DFIR", "OSINT"] },
+  {
+    name: "AnkitS01",
+    link: "https://linkedin.com/in/ankit-s01",
+    tags: ["CRYPTO"],
+  },
+  {
+    name: "Ahundred21",
+    link: "https://github.com/saimerit",
+    tags: ["CRYPTO", "REVERSE"],
+  },
+  {
+    name: "Mr0x00",
+    link: "https://www.linkedin.com/in/snehilshourya101",
+    tags: ["DFIR", "OSINT"],
+  },
   { name: "0verla1n", link: "#", tags: ["REVERSE", "OSINT"] },
-  { name: "cr00k5", link: "https://www.linkedin.com/in/jayanth-renganathan-a08288280/", tags: ["CRYPTO", "OSINT"] },
+  {
+    name: "cr00k5",
+    link: "https://www.linkedin.com/in/jayanth-renganathan-a08288280/",
+    tags: ["CRYPTO", "OSINT"],
+  },
   { name: "s0suk3", link: "https://github.com/s0suk3", tags: ["WEB"] },
-  { name: "0xNiazi", link: "https://www.linkedin.com/in/0xniazi", tags: ["REVERSE"] },
-  { name: "Codezy", link: "https://www.linkedin.com/in/samridhi-tyagi-554463324", tags: ["WEB"] },
-  { name: "TRAPZI", link: "https://www.linkedin.com/in/shatabdi-singh-736ba2360", tags: ["WEB"] },
-  { name: "drizzlehx", link: "https://www.linkedin.com/in/0xutkarsh", tags: ["WEB"] },
-  { name: "Akriti", link: "https://www.linkedin.com/in/akriti-sharma-14259b284/", tags: ["DFIR"] },
-  { name: "NishKov", link: "https://www.linkedin.com/in/nishant-kumar-choudhary-516872287?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app", tags: ["DFIR"] },
-  { name: "Cyberdev007", link: "https://github.com/Devanarayananb", tags: ["WEB"] },
+  {
+    name: "0xNiazi",
+    link: "https://www.linkedin.com/in/0xniazi",
+    tags: ["REVERSE"],
+  },
+  {
+    name: "Codezy",
+    link: "https://www.linkedin.com/in/samridhi-tyagi-554463324",
+    tags: ["WEB"],
+  },
+  {
+    name: "TRAPZI",
+    link: "https://www.linkedin.com/in/shatabdi-singh-736ba2360",
+    tags: ["WEB"],
+  },
+  {
+    name: "drizzlehx",
+    link: "https://www.linkedin.com/in/0xutkarsh",
+    tags: ["WEB"],
+  },
+  {
+    name: "Akriti",
+    link: "https://www.linkedin.com/in/akriti-sharma-14259b284/",
+    tags: ["DFIR"],
+  },
+  {
+    name: "NishKov",
+    link: "https://www.linkedin.com/in/nishant-kumar-choudhary-516872287?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+    tags: ["DFIR"],
+  },
+  {
+    name: "Cyberdev007",
+    link: "https://github.com/Devanarayananb",
+    tags: ["WEB"],
+  },
 ];
 
 const webDevs = [
@@ -458,19 +648,19 @@ function TeamMemberCard({ dev, delay }) {
         href={dev.link}
         target="_blank"
         rel="noopener noreferrer"
-        className="block p-4 rounded-xl border border-white/[0.06] bg-white/[0.02] group hover:border-white/20 hover:bg-white/[0.04] transition-all duration-300"
+        className="block p-4 rounded-3xl border border-white/5 bg-neutral-900/40 group hover:border-white/20 hover:bg-neutral-800/60 hover:shadow-[0_0_20px_rgba(255,255,255,0.05)] transition-all duration-300"
       >
         <div className="flex items-center gap-2 mb-2.5">
-          <p className="text-sm font-semibold text-gray-200 group-hover:text-white transition-colors truncate">
+          <p className="text-sm font-semibold text-neutral-300 group-hover:text-white transition-colors truncate">
             {dev.name}
           </p>
-          <ExternalLink className="w-3 h-3 flex-shrink-0 text-gray-700 group-hover:text-gray-400 transition-colors" />
+          <ExternalLink className="w-3 h-3 shrink-0 text-neutral-500 group-hover:text-white transition-colors" />
         </div>
         <div className="flex flex-wrap gap-1.5">
           {dev.tags.map((tag) => (
             <span
               key={tag}
-              className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-white/[0.06] text-gray-500 border border-white/[0.06]"
+              className="text-[10px] font-medium px-2 py-0.5 rounded-3xl bg-white/5 text-neutral-400 border border-white/5 group-hover:bg-white/10 group-hover:text-neutral-200 transition-colors"
             >
               {tag}
             </span>
@@ -489,110 +679,104 @@ export default function CyberCarnivalHome() {
   useEffect(() => setMounted(true), []);
 
   return (
-    <div className={`min-h-screen bg-[#09090b] text-white overflow-x-hidden ${mounted ? "custom-cursor-area" : ""}`}>
-
+    <div
+      className={`min-h-screen bg-neutral-950 text-white overflow-x-hidden capitalize ${mounted ? "custom-cursor-area" : ""}`}
+    >
       {/* ── Custom cursor ── */}
       {mounted && <CustomCursor />}
 
-      {/* ════ HERO ════════════════════════════════ */}
-      <section className="relative min-h-[92vh] flex items-center justify-center cyber-grid overflow-hidden">
-        <div className="absolute inset-0 scan-line pointer-events-none z-[1]" />
+      <section className="relative min-h-screen">
         {mounted && <MatrixRain />}
-
-        {/* radial glow — subtle white */}
-        <div className="absolute inset-0 pointer-events-none z-[1]" style={{
-          background: "radial-gradient(ellipse 60% 50% at 50% 40%, rgba(255,255,255,0.04) 0%, transparent 70%)",
-        }} />
-
-        <div className="relative z-10 px-6 sm:px-10 lg:px-16 max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between min-h-[85vh] gap-12 pt-24 lg:pt-0">
-          {/* Left Column: Text & CTAs */}
-          <div className="flex-1 text-left max-w-2xl">
-            {/* badge */}
-            <Reveal delay={0}>
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/[0.03] text-gray-300 text-xs font-semibold tracking-widest uppercase mb-10 backdrop-blur-sm">
-                <Sparkles className="w-3.5 h-3.5" />
-                AdVitya 2026 • Capture The Flag
-              </div>
-            </Reveal>
-
-            {/* title */}
-            <Reveal delay={100}>
-              <h1 className="text-5xl sm:text-6xl md:text-8xl font-black leading-[1.0] mb-8 tracking-tighter uppercase font-mono">
-                <span className="block text-gray-400" style={{ "fontFamily": "impact, sans-serif", "letterSpacing": "1px" }}>WELCOME TO</span>
-                <span className="block text-white mt-2" style={{ "fontFamily": "impact, sans-serif", "letterSpacing": "1px" }}>CYBER CARNIVAL</span>
-              </h1>
-            </Reveal>
-
-            {/* subtitle */}
-            <Reveal delay={200}>
-              <p className="text-sm sm:text-base md:text-lg text-gray-400 max-w-md mb-12 leading-relaxed font-light">
-                Step through the gates into AdVITya&apos;s ultimate cybersecurity arena. Solve challenges, climb the leaderboard, and prove your skill at the <span className="text-white font-semibold">Cyber Carnival</span>.
-              </p>
-            </Reveal>
-
-            {/* CTAs */}
-            <Reveal delay={300}>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-                <Link
-                  href="/Auth/register"
-                  className="group relative inline-flex items-center justify-center px-8 py-3.5 min-w-[200px] text-sm font-bold tracking-widest uppercase bg-[#c8c8c8] text-black transition-all hover:bg-white shadow-[0_0_15px_rgba(255,255,255,0.1)]"
-                  style={{ clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)" }}
-                >
-                  <Flag className="w-4 h-4 mr-2" />
-                  JOIN THE CARNIVAL
-                </Link>
-
-                <div className="relative p-[1px] inline-flex items-center justify-center min-w-[200px] transition-all group hover:bg-white/20"
-                  style={{ clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)" }}>
-                  <div className="absolute inset-0 bg-white/30" />
-                  <Link
-                    href="/challenges"
-                    className="relative w-full h-full bg-[#09090b] group-hover:bg-[#121215] text-white flex items-center justify-center px-8 py-3.5 text-sm font-bold tracking-widest uppercase transition-all"
-                    style={{ clipPath: "polygon(11px 0, 100% 0, 100% calc(100% - 11px), calc(100% - 11px) 100%, 0 100%, 0 11px)" }}
-                  >
-                    <Target className="w-4 h-4 mr-2" />
-                    VIEW CHALLENGES
-                  </Link>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between min-h-[calc(100vh-4rem)] pt-20 lg:pt-0">
+            {/* Left Column: Text & CTAs */}
+            <div className="flex-1 text-left w-full flex flex-col justify-center lg:items-start lg:px-0">
+              {/* badge */}
+              <Reveal delay={0}>
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-3xl border border-white/10 bg-white/3 text-gray-300 text-xs font-semibold tracking-widest uppercase mb-8 backdrop-blur-sm">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  AdVitya 2026 • Capture The Flag
                 </div>
-              </div>
-            </Reveal>
+              </Reveal>
 
-          </div>
+              {/* title */}
+              <Reveal delay={100}>
+                <h1 className="text-4xl sm:text-5xl md:text-7xl font-black leading-[0.95] mb-8 font-sans">
+                  <span className="block text-gray-400">Welcome to</span>
+                  <span className="block text-white">Cyber Carnival</span>
+                </h1>
+              </Reveal>
 
-          {/* Right Column: Terminal & Decor */}
-          <div className="flex-1 w-full lg:w-auto relative flex flex-col justify-center items-center lg:items-end pb-12 lg:pb-0">
-            {/* countdown */}
-            <Reveal delay={400}>
-              <div className="mb-8 w-[320px] sm:w-[400px] md:w-[480px] lg:ml-auto flex flex-col items-start">
-                <CountdownTimer />
-              </div>
-            </Reveal>
+              {/* subtitle */}
+              <Reveal delay={200}>
+                <p className="text-sm sm:text-base md:text-lg text-gray-400 max-w-md mb-12 font-light">
+                  Solve challenges, climb the leaderboard, and prove your skill
+                  at the{" "}
+                  <span className="text-white font-semibold">
+                    Cyber Carnival
+                  </span>
+                  .
+                </p>
+              </Reveal>
 
-            <Reveal delay={500}>
-              <div className="w-[320px] sm:w-[400px] md:w-[480px] lg:ml-auto">
-                <TypingTerminal />
-              </div>
-            </Reveal>
+              {/* CTAs */}
+              <Reveal delay={300}>
+                <div className="flex flex-col sm:flex-row items-center gap-5">
+                  <Link
+                    href="/Auth/register"
+                    className="group relative inline-flex items-center justify-center px-8 py-3.5 w-full sm:w-auto min-w-[200px] text-sm font-bold tracking-widest bg-[#c8c8c8] text-black transition-all hover:bg-white shadow-[0_0_15px_rgba(255,255,255,0.1)] rounded-full"
+                  >
+                    <Flag className="w-4 h-4 mr-2" />
+                    JOIN THE CARNIVAL
+                  </Link>
 
-            {/* scroll down indicator */}
-            <div className="absolute -bottom-12 lg:-bottom-24 right-1/2 translate-x-1/2 lg:right-12 lg:translate-x-0 flex flex-col items-center gap-1 animate-bounce opacity-40">
-              <span className="text-[9px] uppercase tracking-[0.3em] text-gray-500 font-bold">SCROLL</span>
-              <ChevronRight className="w-3.5 h-3.5 rotate-90 text-gray-500" />
+                  <div className="relative p-[1px] inline-flex items-center justify-center w-full sm:w-auto min-w-[200px] rounded-full overflow-hidden group">
+                    <span className="absolute inset-0 bg-gradient-to-r from-white/10 via-white/30 to-white/10 opacity-50 group-hover:opacity-100 transition-opacity" />
+                    <Link
+                      href="/challenges"
+                      className="relative w-full h-full bg-[#09090b] hover:bg-[#121215] text-white flex items-center justify-center px-8 py-3.5 text-sm font-bold tracking-widest uppercase transition-all rounded-full"
+                    >
+                      <Target className="w-4 h-4 mr-2" />
+                      VIEW CHALLENGES
+                    </Link>
+                  </div>
+                </div>
+              </Reveal>
+            </div>
+
+            {/* Right Column: Terminal & Decor */}
+            <div className="flex-1 w-full lg:w-auto relative flex flex-col justify-center items-center lg:items-end pb-12 lg:pb-0">
+              {/* countdown */}
+              <Reveal delay={400}>
+                <div className="mb-8 w-[320px] sm:w-[400px] md:w-[480px] lg:ml-auto flex flex-col items-start">
+                  <CountdownTimer />
+                </div>
+              </Reveal>
+
+              <Reveal delay={500}>
+                <div className="w-full max-w-lg lg:ml-auto flex justify-center lg:justify-end">
+                  <TypingTerminal className="w-full" />
+                </div>
+              </Reveal>
+
+              {/* scroll down indicator */}
             </div>
           </div>
         </div>
       </section>
 
       {/* ════ CHALLENGE CATEGORIES ════════════════ */}
-      <section className="relative py-28 px-4">
-        <div className="max-w-6xl mx-auto">
+      <section className="relative py-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal>
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">
-                <span className="text-white">Challenge</span> <span className="text-gray-500">Categories</span>
+                <span className="text-white">Challenge</span>{" "}
+                <span className="text-gray-500">Categories</span>
               </h2>
               <p className="text-gray-600 max-w-xl mx-auto text-sm">
-                Choose your arena. Each category tests a different dimension of your cybersecurity expertise.
+                Choose your arena. Each category tests a different dimension of
+                your cybersecurity expertise.
               </p>
             </div>
           </Reveal>
@@ -603,15 +787,19 @@ export default function CyberCarnivalHome() {
               return (
                 <Reveal key={cat.name} delay={i * 80}>
                   <TiltCard className="h-full">
-                    <div className="glass-card p-6 group relative overflow-hidden h-full cursor-default border border-white/[0.04] hover:border-white/15">
+                    <div className="glass-card p-6 group relative overflow-hidden h-full cursor-default border border-white/4 hover:border-white/15">
                       {/* hover glow */}
-                      <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-500 blur-3xl bg-white" />
+                      <div className="absolute -top-20 -right-20 w-40 h-40 rounded-3xl opacity-0 group-hover:opacity-10 transition-opacity duration-500 blur-3xl bg-white" />
                       <div className="relative z-10">
-                        <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-4 bg-white/[0.05] border border-white/10">
+                        <div className="w-12 h-12 rounded-3xl flex items-center justify-center mb-4 bg-white/5 border border-white/10">
                           <Icon className="w-6 h-6 text-gray-400" />
                         </div>
-                        <h3 className="text-lg font-bold mb-2 text-gray-200">{cat.name}</h3>
-                        <p className="text-gray-500 text-sm leading-relaxed">{cat.desc}</p>
+                        <h3 className="text-lg font-bold mb-2 text-gray-200">
+                          {cat.name}
+                        </h3>
+                        <p className="text-gray-500 text-sm leading-relaxed">
+                          {cat.desc}
+                        </p>
                       </div>
                     </div>
                   </TiltCard>
@@ -622,121 +810,84 @@ export default function CyberCarnivalHome() {
         </div>
       </section>
 
-      {/* ════ THE EVENT ═══════════════════════════ */}
-      <section className="relative py-28 px-4">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-
-        <div className="max-w-5xl mx-auto">
-          <Reveal>
-            <div className="text-center mb-14">
-              <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">
-                <span className="text-white">The</span> <span className="text-gray-500">Event</span>
-              </h2>
-              <p className="text-gray-600 text-sm max-w-xl mx-auto">
-                A high-stakes cybersecurity CTF at AdVITya 2026, where logic beats luck and precision wins.
-              </p>
-            </div>
-          </Reveal>
-
-          <Reveal delay={80}>
-            <TrailCard duration="10s">
-              {/* Poster */}
-              <div className="relative w-full bg-black/30">
-                <Image src="/poster.jpeg" alt="Cyber Carnival CTF — AdVITya 2026" width={1200} height={700} className="w-full h-auto" quality={90} priority />
-              </div>
-
-              {/* Details */}
-              <div className="p-8 sm:p-10">
-                <div className="flex flex-col lg:flex-row gap-8">
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-extrabold mb-3 text-gray-200">
-                      <span className="text-white">Capture</span> The Flag 🚩
-                    </h3>
-                    <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                      Built to test your skill, speed, and strategy. Battle Web, Pwn, Crypto & AI/ML challenges, crack flags, dominate the leaderboard, and win big.
-                    </p>
-                    <div className="space-y-3 text-sm text-gray-500">
-                      <div className="flex items-center gap-3"><Calendar className="w-4 h-4 text-gray-400 flex-shrink-0" /><span>27 February 2026 (AdVITya&apos;26)</span></div>
-                      <div className="flex items-center gap-3"><Clock className="w-4 h-4 text-gray-400 flex-shrink-0" /><span>10:00 AM – 4:00 PM</span></div>
-                      <div className="flex items-center gap-3"><MapPin className="w-4 h-4 text-gray-400 flex-shrink-0" /><span>Venue: AR-002</span></div>
-                    </div>
-                  </div>
-
-                  <div className="lg:w-72 flex-shrink-0">
-                    <div className="rounded-xl p-5 border border-white/[0.06] bg-white/[0.02]">
-                      <p className="text-[11px] uppercase tracking-widest text-gray-500 mb-4 font-bold">💰 Participation Fee</p>
-                      <div className="space-y-3">
-                        {[
-                          { label: "Solo (1 member)", price: "₹49" },
-                          { label: "Team of 2", price: "₹89" },
-                          { label: "Team of 3", price: "₹129" },
-                          { label: "Team of 4", price: "₹159" },
-                        ].map((t) => (
-                          <div key={t.label} className="flex items-center justify-between text-sm">
-                            <span className="text-gray-500">{t.label}</span>
-                            <span className="font-bold text-gray-200">{t.price}</span>
-                          </div>
-                        ))}
-                      </div>
-                      <Link
-                        href="/Auth/register"
-                        className="mt-5 w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-bold text-sm text-black bg-white hover:bg-gray-200 transition-all shadow-[0_0_15px_rgba(255,255,255,0.08)]"
-                      >
-                        <Flag className="w-4 h-4" />
-                        Register Now
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </TrailCard>
-          </Reveal>
-        </div>
-      </section>
-
       {/* ════ EVENT TIMELINE ══════════════════════ */}
-      <section className="relative py-28 px-4">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+      <section className="relative py-28">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-linear-to-r from-transparent via-white/8 to-transparent" />
 
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal>
             <div className="text-center mb-14">
               <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">
-                <span className="text-white">Event</span> <span className="text-gray-500">Timeline</span>
+                <span className="text-white">Event</span>{" "}
+                <span className="text-gray-500">Timeline</span>
               </h2>
-              <p className="text-gray-600 text-sm">Key milestones of the Cyber Carnival.</p>
+              <p className="text-gray-600 text-sm">
+                Key milestones of the Cyber Carnival.
+              </p>
             </div>
           </Reveal>
 
           <div className="relative">
             <div className="space-y-6 max-w-2xl mx-auto">
-              {events.map((evt, i) => (
-                <Reveal key={i} delay={i * 100}>
-                  <div className="glass-card p-6 border border-white/[0.04] bg-[#0f0f13] rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
-                      <h3 className="text-lg font-bold text-gray-200">{evt.title}</h3>
-                      <span className="inline-flex items-center gap-1.5 text-xs text-gray-400 font-mono bg-white/[0.03] px-3 py-1 rounded-full border border-white/[0.05]">
-                        <Calendar className="w-3.5 h-3.5" /> {evt.date}
-                      </span>
+              {events.map((evt, i) => {
+                // Determine status dynamically based on current date
+                const now = new Date();
+                const start = new Date(evt.startDate);
+                const end = new Date(evt.endDate);
+                let status = "upcoming";
+                if (now > end) status = "completed";
+                else if (now >= start && now <= end) status = "active";
+
+                return (
+                  <Reveal key={i} delay={i * 100}>
+                    <div
+                      className={`glass-card p-6 border rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.5)] transition-all duration-300 relative ${
+                        status === "active"
+                          ? "border-white/50 bg-[#0f0f13] shadow-[0_0_30px_rgba(255,255,255,0.1)]"
+                          : "border-white/4 bg-[#0f0f13]"
+                      }`}
+                    >
+                      {status === "active" && (
+                        <span className="absolute -top-3 left-6 px-3 py-1 bg-white text-black text-[10px] font-bold tracking-widest uppercase rounded-full shadow-lg">
+                          Current Phase
+                        </span>
+                      )}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                        <h3
+                          className={`text-lg font-bold ${
+                            status === "active"
+                              ? "text-white"
+                              : "text-gray-200"
+                          }`}
+                        >
+                          {evt.title}
+                        </h3>
+                        <span className="inline-flex items-center gap-1.5 text-xs text-gray-400 font-mono bg-white/3 px-3 py-1 rounded-3xl border border-white/5">
+                          <Calendar className="w-3.5 h-3.5" /> {evt.date}
+                        </span>
+                      </div>
+                      <p className="text-gray-500 text-sm leading-relaxed">
+                        {evt.desc}
+                      </p>
                     </div>
-                    <p className="text-gray-500 text-sm leading-relaxed">{evt.desc}</p>
-                  </div>
-                </Reveal>
-              ))}
+                  </Reveal>
+                );
+              })}
             </div>
           </div>
         </div>
       </section>
 
       {/* ════ MEET THE TEAM ══════════════════════ */}
-      <section className="relative py-28 px-4">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+      <section className="relative py-28">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-linear-to-r from-transparent via-white/8 to-transparent" />
 
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal>
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">
-                <span className="text-white">Meet</span> <span className="text-gray-500">the Team</span>
+                <span className="text-white">Meet</span>{" "}
+                <span className="text-gray-500">the Team</span>
               </h2>
               <p className="text-gray-600 max-w-xl mx-auto text-sm">
                 The minds behind the challenges and the platform.
@@ -748,10 +899,12 @@ export default function CyberCarnivalHome() {
           <Reveal delay={100}>
             <div className="mb-14">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/[0.05] border border-white/10">
+                <div className="w-10 h-10 rounded-3xl flex items-center justify-center bg-white/5 border border-white/10">
                   <ShieldCheck className="w-5 h-5 text-gray-400" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-200">CTF Challenge Developers</h3>
+                <h3 className="text-xl font-bold text-gray-200">
+                  CTF Challenge Developers
+                </h3>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 {challengeDevs.map((dev, i) => (
@@ -765,10 +918,12 @@ export default function CyberCarnivalHome() {
           <Reveal delay={200}>
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/[0.05] border border-white/10">
+                <div className="w-10 h-10 rounded-3xl flex items-center justify-center bg-white/5 border border-white/10">
                   <Code className="w-5 h-5 text-gray-400" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-200">Web Developers</h3>
+                <h3 className="text-xl font-bold text-gray-200">
+                  Web Developers
+                </h3>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 {webDevs.map((dev, i) => (
@@ -781,22 +936,26 @@ export default function CyberCarnivalHome() {
       </section>
 
       {/* ════ FOOTER ═════════════════════════════ */}
-      <footer className="relative border-t border-white/[0.04] pt-16 pb-8 px-4 mt-12">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      <footer className="relative border-t border-white/5 pt-16 pb-8 -mt-12 backdrop-blur-3xl bg-black/40">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-linear-to-r from-transparent via-white/10 to-transparent" />
 
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-12 mb-12">
             {/* brand */}
             <div className="lg:pr-12">
-              <h3 className="text-xl font-extrabold text-white mb-3 tracking-tight">CyberCarnival</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
+              <h3 className="text-xl font-extrabold text-white mb-3 tracking-tight">
+                CyberCarnival
+              </h3>
+              <p className="text-neutral-400 text-sm leading-relaxed">
                 The ultimate CTF battleground organized as part of AdVitya 2026.
               </p>
             </div>
 
             {/* quick links */}
             <div className="sm:pl-8">
-              <h4 className="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-black mb-5">Quick Links</h4>
+              <h4 className="text-[10px] uppercase tracking-[0.2em] text-neutral-500 font-black mb-5">
+                Quick Links
+              </h4>
               <ul className="space-y-3">
                 {[
                   { name: "Challenges", href: "/challenges" },
@@ -805,8 +964,12 @@ export default function CyberCarnivalHome() {
                   { name: "Register", href: "/Auth/register" },
                 ].map((l) => (
                   <li key={l.name}>
-                    <Link href={l.href} className="text-sm text-gray-600 hover:text-white transition-all duration-300 inline-flex items-center gap-1 group">
-                      <ChevronRight className="w-3 h-3 text-gray-800 group-hover:translate-x-0.5 transition-transform" /> {l.name}
+                    <Link
+                      href={l.href}
+                      className="text-sm text-neutral-400 hover:text-white transition-all duration-300 inline-flex items-center gap-1 group"
+                    >
+                      <ChevronRight className="w-3 h-3 text-neutral-600 group-hover:translate-x-0.5 transition-transform" />{" "}
+                      {l.name}
                     </Link>
                   </li>
                 ))}
@@ -815,7 +978,9 @@ export default function CyberCarnivalHome() {
 
             {/* organized by */}
             <div className="sm:pl-8">
-              <h4 className="text-[10px] uppercase tracking-[0.2em] text-gray-300 font-black mb-5">Organized By</h4>
+              <h4 className="text-[10px] uppercase tracking-[0.2em] text-neutral-500 font-black mb-5">
+                Organized By
+              </h4>
               <ul className="space-y-3">
                 {clubLinks.map((club) => (
                   <li key={club.name}>
@@ -823,9 +988,9 @@ export default function CyberCarnivalHome() {
                       href={club.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-gray-500 hover:text-white transition-all duration-300 inline-flex items-center gap-2 group"
+                      className="text-sm text-neutral-400 hover:text-white transition-all duration-300 inline-flex items-center gap-2 group"
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-gray-900 group-hover:bg-white transition-colors" />
+                      <span className="w-1.5 h-1.5 rounded-3xl bg-neutral-700 group-hover:bg-white transition-colors" />
                       {club.name}
                     </a>
                   </li>
@@ -834,8 +999,11 @@ export default function CyberCarnivalHome() {
             </div>
           </div>
 
-          <div className="border-t border-white/[0.04] pt-8 mt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <span className="text-[10px] uppercase tracking-widest text-gray-300">&copy; {new Date().getFullYear()} CyberCarnival &bull; AdVitya 2026</span>
+          <div className="border-t border-white/5 pt-8 mt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <span className="text-[10px] uppercase tracking-widest text-neutral-500">
+              &copy; {new Date().getFullYear()} CyberCarnival &bull; AdVitya
+              2026
+            </span>
           </div>
         </div>
       </footer>

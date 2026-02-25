@@ -119,8 +119,9 @@ const Leaderboard = () => {
 
       {!chartError && chartData.length > 0 && teams.length > 0 && (
         <div className="max-w-6xl mx-auto px-6 mb-8">
-          <div className="bg-[#191919] rounded-xl p-4">
-            <h2 className="text-xs uppercase tracking-widest text-gray-400 mb-3">
+          <div className="w-full overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/40 backdrop-blur-md shadow-2xl p-6">
+            <h2 className="text-xs uppercase tracking-widest text-neutral-500 font-bold mb-6 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
               Score Progression
             </h2>
 
