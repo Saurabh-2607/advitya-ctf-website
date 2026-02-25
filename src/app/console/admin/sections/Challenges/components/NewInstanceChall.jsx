@@ -67,23 +67,24 @@ export default function NewInstanceChall({ onClose, onCreated }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-xl flex items-center justify-center p-4 z-50">
-      <div className="rounded-lg w-full max-w-xl max-h-[90vh] overflow-y-auto">
-        <div className="p-4 border-b border-white/20">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl font-medium text-white">
-              Add Instance Challenge
-            </h3>
-            <button onClick={onClose} className="p-1 text-white rounded">
-              <X className="w-5 h-5" />
-            </button>
-          </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+      <div className="bg-neutral-900 border border-neutral-800 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
+        <div className="flex items-center justify-between p-6 border-b border-neutral-800">
+          <h2 className="text-xl font-bold text-white">
+            Add Instance Challenge
+          </h2>
+          <button
+            onClick={onClose}
+            className="p-2 text-neutral-400 hover:text-white rounded-lg hover:bg-neutral-800 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-4 space-y-4">
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-white mb-1">
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="block text-xs font-semibold text-neutral-400 uppercase tracking-wider">
                 Name
               </label>
               <input
@@ -92,11 +93,11 @@ export default function NewInstanceChall({ onClose, onCreated }) {
                 onChange={handleInputChange}
                 required
                 placeholder="Challenge name"
-                className="w-full px-3 py-2 bg-white/10 rounded text-sm text-white"
+                className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-500 focus:ring-1 focus:ring-neutral-500 transition-colors"
               />
             </div>
-            <div>
-              <label className="block text-xs font-medium text-white mb-1">
+            <div className="space-y-2">
+              <label className="block text-xs font-semibold text-neutral-400 uppercase tracking-wider">
                 Author
               </label>
               <input
@@ -105,21 +106,21 @@ export default function NewInstanceChall({ onClose, onCreated }) {
                 onChange={handleInputChange}
                 required
                 placeholder="Author"
-                className="w-full px-3 py-2 bg-white/10 rounded text-sm text-white"
+                className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-500 focus:ring-1 focus:ring-neutral-500 transition-colors"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-white mb-1">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="block text-xs font-semibold text-neutral-400 uppercase tracking-wider">
                 Category
               </label>
               <select
                 name="category"
                 value={formData.category}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 bg-white/10 rounded text-sm text-white"
+                className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-sm text-white focus:outline-none focus:border-neutral-500 focus:ring-1 focus:ring-neutral-500 transition-colors appearance-none"
               >
                 {[
                   "web",
@@ -130,15 +131,15 @@ export default function NewInstanceChall({ onClose, onCreated }) {
                   "reverse",
                   "misc",
                 ].map((c) => (
-                  <option key={c} value={c} className="bg-black">
+                  <option key={c} value={c} className="bg-neutral-900">
                     {c}
                   </option>
                 ))}
               </select>
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-white mb-1">
+            <div className="space-y-2">
+              <label className="block text-xs font-semibold text-neutral-400 uppercase tracking-wider">
                 Points
               </label>
               <input
@@ -148,61 +149,63 @@ export default function NewInstanceChall({ onClose, onCreated }) {
                 onChange={handleInputChange}
                 required
                 min="1"
-                placeholder="Points"
-                className="w-full px-3 py-2 bg-white/10 rounded text-sm text-white"
+                placeholder="e.g. 100"
+                className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-500 focus:ring-1 focus:ring-neutral-500 transition-colors"
               />
             </div>
           </div>
 
-          <div>
-            <label className="block text-xs font-medium text-white mb-1">
-              Description
+          <div className="space-y-2">
+            <label className="block text-xs font-semibold text-neutral-400 uppercase tracking-wider">
+              Description (Markdown)
             </label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleInputChange}
               required
-              rows="3"
-              placeholder="Challenge description"
-              className="w-full px-3 py-2 bg-white/10 rounded text-sm text-white"
+              rows="6"
+              placeholder="Write your challenge description here..."
+              className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-500 focus:ring-1 focus:ring-neutral-500 transition-colors resize-y font-mono"
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-medium text-white mb-1">
+          <div className="space-y-2">
+            <label className="block text-xs font-semibold text-neutral-400 uppercase tracking-wider">
               Challenge Bundle (ZIP)
             </label>
-            <input
-              type="file"
-              accept=".zip"
-              onChange={handleBundleChange}
-              className="w-full px-3 py-2 bg-white/10 rounded text-sm text-white"
-            />
-            <p className="text-xs text-white/50 mt-1">
+            <div className="relative">
+              <input
+                type="file"
+                accept=".zip"
+                onChange={handleBundleChange}
+                className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-sm text-neutral-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-neutral-700 file:text-white hover:file:bg-neutral-600 transition-colors"
+              />
+            </div>
+            <p className="text-xs text-neutral-500 mt-1">
               Must contain a Dockerfile at root
             </p>
           </div>
 
-          <div className="flex justify-end gap-2 pt-3 border-t border-white/20">
+          <div className="pt-4 border-t border-neutral-800 flex justify-end gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-white text-sm"
+              className="px-4 py-2 text-sm text-neutral-400 hover:text-white transition-colors"
             >
               Cancel
             </button>
-
             <button
               type="submit"
               disabled={submitting}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white disabled:bg-white/5 text-white hover:text-black text-sm rounded"
+              className="inline-flex items-center gap-2 px-6 py-2 bg-white text-black hover:bg-neutral-200 disabled:bg-neutral-600 disabled:cursor-not-allowed text-sm font-semibold rounded-lg transition-colors"
             >
               {submitting ? (
-                "Uploading…"
+                "Uploading..."
               ) : (
                 <>
-                  <Save className="w-4 h-4" /> Upload
+                  <Save className="w-4 h-4" />
+                  Create Instance Challenge
                 </>
               )}
             </button>

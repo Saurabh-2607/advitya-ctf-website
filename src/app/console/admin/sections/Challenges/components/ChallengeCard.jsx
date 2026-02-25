@@ -14,7 +14,7 @@ const ChallengeCard = ({
   onEdit
 }) => {
   return (
-    <div className="bg-white/10 rounded-lg">
+    <div className="w-full">
       {challenge.type === "instance" ? (
         <InstanceChallenge
           challenge={challenge}

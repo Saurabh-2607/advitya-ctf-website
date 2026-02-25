@@ -72,172 +72,195 @@ export default function EditNormalChall({ challenge, onClose, onUpdated }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-xl flex items-center justify-center p-4 z-50">
-      <div className="rounded-lg w-full max-w-xl max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="p-4 border-b border-white/20">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl font-medium text-white">
-              Edit Challenge
-            </h3>
-            <button onClick={onClose} className="p-1 text-white rounded">
-              <X className="w-5 h-5" />
-            </button>
-          </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+      <div className="bg-neutral-900 border border-neutral-800 rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
+        <div className="flex items-center justify-between px-6 py-3 border-b border-neutral-800 shrink-0">
+          <h2 className="text-base font-bold text-white">Edit Challenge</h2>
+          <button
+            onClick={onClose}
+            className="p-1 text-neutral-400 hover:text-white rounded-lg hover:bg-neutral-800 transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-4 space-y-4">
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+          <div className="flex-1 overflow-y-auto p-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
+              {/* Left Column: Metadata */}
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="block text-xs font-semibold text-neutral-400 uppercase tracking-wider">
+                      Name
+                    </label>
+                    <input
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-500 focus:ring-1 focus:ring-neutral-500 transition-colors"
+                    />
+                  </div>
 
-          {/* Name + Author */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-white mb-1">
-                Name
-              </label>
-              <input
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 bg-white/10 rounded text-sm text-white"
-              />
-            </div>
+                  <div className="space-y-2">
+                    <label className="block text-xs font-semibold text-neutral-400 uppercase tracking-wider">
+                      Author
+                    </label>
+                    <input
+                      name="author"
+                      value={formData.author}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-500 focus:ring-1 focus:ring-neutral-500 transition-colors"
+                    />
+                  </div>
+                </div>
 
-            <div>
-              <label className="block text-xs font-medium text-white mb-1">
-                Author
-              </label>
-              <input
-                name="author"
-                value={formData.author}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 bg-white/10 rounded text-sm text-white"
-              />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2 relative">
+                    <label className="block text-xs font-semibold text-neutral-400 uppercase tracking-wider">
+                      Category
+                    </label>
+                    <div className="relative">
+                      <select
+                        name="category"
+                        value={formData.category}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-sm text-white focus:outline-none focus:border-neutral-500 focus:ring-1 focus:ring-neutral-500 transition-colors appearance-none cursor-pointer"
+                      >
+                        {[
+                          "web",
+                          "OSINT",
+                          "pwn",
+                          "crypto",
+                          "forensics",
+                          "reverse",
+                          "misc",
+                        ].map((c) => (
+                          <option key={c} value={c} className="bg-neutral-900">
+                            {c}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-neutral-400">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-xs font-semibold text-neutral-400 uppercase tracking-wider">
+                      Points
+                    </label>
+                    <input
+                      type="number"
+                      name="value"
+                      value={formData.value}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-500 focus:ring-1 focus:ring-neutral-500 transition-colors"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-xs font-semibold text-neutral-400 uppercase tracking-wider">
+                    Flag
+                  </label>
+                  <input
+                    name="flag"
+                    value={formData.flag}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-500 focus:ring-1 focus:ring-neutral-500 transition-colors font-mono"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-xs font-semibold text-neutral-400 uppercase tracking-wider">
+                    Upload File (Optional)
+                  </label>
+
+                  {formData.file_url && (
+                    <div className="mb-4 p-3 bg-black/20 border border-neutral-800 rounded-lg text-xs break-all">
+                      <div className="flex items-start justify-between gap-4 mb-2">
+                        <span className="text-neutral-500 font-mono">Current File:</span>
+                        <button
+                          type="button"
+                          onClick={() => setFormData((prev) => ({ ...prev, file_url: "" }))}
+                          className="text-red-400 hover:text-red-300 font-medium hover:underline"
+                        >
+                          Remove File
+                        </button>
+                      </div>
+                      <div className="flex items-center gap-2">
+                         <a
+                          href={formData.file_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-emerald-400 hover:text-emerald-300 hover:underline truncate block"
+                        >
+                          {formData.file_url}
+                        </a>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex gap-4 items-center">
+                    <input
+                      type="file"
+                      onChange={handleFileUpload}
+                      disabled={uploading}
+                      className="block w-full text-sm text-neutral-400
+                        file:mr-4 file:py-2.5 file:px-4
+                        file:rounded-lg file:border-0
+                        file:text-sm file:font-semibold
+                        file:bg-neutral-800 file:text-neutral-300
+                        hover:file:bg-neutral-700 transition-colors
+                        cursor-pointer"
+                    />
+                    {uploading && (
+                      <span className="text-xs text-blue-400 font-medium animate-pulse">
+                        Uploading...
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 p-4 bg-neutral-800/50 rounded-lg border border-neutral-800">
+                  <input
+                    type="checkbox"
+                    name="visible"
+                    checked={formData.visible}
+                    onChange={handleInputChange}
+                    id="visible-check-edit"
+                    className="w-5 h-5 rounded bg-neutral-800 border-neutral-600 text-emerald-500 focus:ring-emerald-500 focus:ring-offset-neutral-900"
+                  />
+                  <label htmlFor="visible-check-edit" className="text-sm font-medium text-white cursor-pointer select-none">
+                    Make visible to participants immediately
+                  </label>
+                </div>
+              </div>
+
+              {/* Right Column: Description */}
+              <div className="flex flex-col space-y-2 h-full">
+                <label className="block text-xs font-semibold text-neutral-400 uppercase tracking-wider">
+                  Description (Markdown)
+                </label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  className="flex-1 w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-500 focus:ring-1 focus:ring-neutral-500 transition-colors resize-none font-mono min-h-[300px]"
+                />
+              </div>
             </div>
           </div>
 
-          {/* Category + Points */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-white mb-1">
-                Category
-              </label>
-              <input
-                name="category"
-                value={formData.category}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 bg-white/10 rounded text-sm text-white"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-white mb-1">
-                Points
-              </label>
-              <input
-                type="number"
-                name="value"
-                value={formData.value}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 bg-white/10 rounded text-sm text-white"
-              />
-            </div>
-          </div>
-
-          {/* Description */}
-          <div>
-            <label className="block text-xs font-medium text-white mb-1">
-              Description
-            </label>
-            <textarea
-              name="description"
-              rows="3"
-              value={formData.description}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 bg-white/10 rounded text-sm text-white"
-            />
-          </div>
-
-          {/* Flag */}
-          <div>
-            <label className="block text-xs font-medium text-white mb-1">
-              Flag
-            </label>
-            <input
-              name="flag"
-              value={formData.flag}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 bg-white/10 rounded text-sm text-white"
-            />
-          </div>
-
-          {/* File */}
-         <div>
-  <label className="block text-xs font-medium text-white mb-1">
-    Upload File (Optional)
-  </label>
-
-  {/* Current file */}
-  {formData.file_url && (
-    <div className="mb-2 p-2 bg-white/5 border border-white/10 rounded text-xs text-white break-all">
-      <div className="flex items-center justify-between gap-2">
-        <a
-          href={formData.file_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline text-blue-300 hover:text-blue-200"
-        >
-          Open current file
-        </a>
-
-        {/* Remove button */}
-        <button
-          type="button"
-          onClick={() =>
-            setFormData((prev) => ({ ...prev, file_url: "" }))
-          }
-          className="text-red-400 hover:text-red-300 text-xs"
-        >
-          Remove
-        </button>
-      </div>
-
-      <div className="opacity-60 mt-1">
-        {formData.file_url}
-      </div>
-    </div>
-  )}
-
-  {/* Upload new */}
-  <input
-    type="file"
-    onChange={handleFileUpload}
-    disabled={uploading}
-    className="w-full px-3 py-2 bg-white/10 rounded text-sm text-white"
-  />
-
-  {uploading && (
-    <p className="text-xs text-blue-400">Uploading…</p>
-  )}
-</div>
-
-          {/* Visible */}
-          <label className="flex items-center gap-2 text-xs text-white">
-            <input
-              type="checkbox"
-              name="visible"
-              checked={formData.visible}
-              onChange={handleInputChange}
-            />
-            Visible to participants
-          </label>
-
-          {/* Footer */}
-          <div className="flex justify-end gap-2 pt-3 border-t border-white/20">
+          <div className="px-6 py-3 border-t border-neutral-800 bg-neutral-900 shrink-0 flex justify-end gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-white text-sm"
+              className="px-4 py-2 text-neutral-400 hover:text-white text-sm font-medium transition-colors"
             >
               Cancel
             </button>
@@ -245,13 +268,13 @@ export default function EditNormalChall({ challenge, onClose, onUpdated }) {
             <button
               type="submit"
               disabled={submitting}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white disabled:bg-white/5 text-white hover:text-black text-sm rounded"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white text-black hover:bg-neutral-200 disabled:bg-neutral-800 disabled:text-neutral-500 text-sm font-semibold rounded-lg transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
             >
               {submitting ? (
-                "Updating…"
+                <>Updating...</>
               ) : (
                 <>
-                  <Save className="w-4 h-4" /> Update
+                  <Save className="w-4 h-4" /> Save Changes
                 </>
               )}
             </button>
