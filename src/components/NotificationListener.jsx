@@ -9,7 +9,6 @@ export default function NotificationListener() {
   const { token } = useAuth();
   const [firstBlood, setFirstBlood] = useState(null);
 
-  /*  FIRST BLOOD AUDIO */
   const firstBloodAudioRef = useRef(null);
 
   useEffect(() => {
@@ -18,9 +17,7 @@ export default function NotificationListener() {
     }
   }, []);
 
-  /*  SOCKET EVENTS */
   useNotifications((event) => {
-    /*  FIRST BLOOD */
     if (event.type === "FIRST_BLOOD") {
       if (firstBloodAudioRef.current) {
         firstBloodAudioRef.current.currentTime = 0;
@@ -40,7 +37,6 @@ export default function NotificationListener() {
       return;
     }
 
-    /*  SOLVE */
     if (event.type === "SOLVE") {
       toast.info(event.message, {
         position: "bottom-right",
@@ -50,7 +46,6 @@ export default function NotificationListener() {
       return;
     }
 
-    /*  ADMIN NOTIFICATION */
     if (event.type === "ADMIN_NOTIFICATION") {
       const toastType =
         event.level === "critical"
@@ -62,14 +57,12 @@ export default function NotificationListener() {
 
       toastType(event.message, {
         position: "top-right",
-        autoClose: event.level === "critical" ? false : 6000,
         theme: "dark",
         toastId: event.notificationId,
       });
     }
   }, token);
 
-  /*  GLITTER EFFECT */
   const glitterParticles = useMemo(
     () =>
       Array.from({ length: 50 }, (_, i) => ({

@@ -19,6 +19,7 @@ export default function UserRegister() {
   const router = useRouter();
 
   const [step, setStep] = useState(1);
+  const [resendTimer, setResendTimer] = useState(0);
 
   const [form, setForm] = useState({
     name: "",
@@ -51,6 +52,15 @@ export default function UserRegister() {
     }
   }, [isAuthenticated, router]);
 
+  useEffect(() => {
+    if (resendTimer <= 0) return;
+
+    const interval = setInterval(() => {
+      setResendTimer((t) => t - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [resendTimer]);
   const handleChange = (e) => {
     setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
   };
@@ -176,6 +186,44 @@ export default function UserRegister() {
     }
   };
 
+
+  const handleResendOtp = async () => {
+    if (resendTimer > 0) return;
+
+    setStatus({ loading: false, error: "", success: "" });
+    setResendTimer(60); 
+
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          password: form.password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setStatus({ loading: false, error: data.message, success: "" });
+        return;
+      }
+
+      setStatus({
+        loading: false,
+        error: "",
+        success: "OTP resent successfully",
+      });
+    } catch {
+      setStatus({
+        loading: false,
+        error: "Failed to resend OTP",
+        success: "",
+      });
+    }
+  };
   /* ---------------- UI ---------------- */
 
   return (
@@ -186,7 +234,7 @@ export default function UserRegister() {
             {step === 1 ? "Create Account" : "Verify Email"}
           </h1>
           <p className="text-white/80 mt-2">
-            Powered by Null Student Chapter VIT Bhopal
+            Powered by CyberCarnival
           </p>
         </div>
 
@@ -214,7 +262,7 @@ export default function UserRegister() {
                 />
 
                 {/* Email */}
-                <label className="block text-sm text-white mb-2">Email</label>
+                <label className="block text-sm text-white mb-2">VIT Email</label>
                 <Input
                   icon={Mail}
                   name="email"
@@ -236,7 +284,6 @@ export default function UserRegister() {
                   }
                 />
 
-                {/* Confirm Password */}
                 <PasswordInput
                   label="Confirm Password"
                   value={form.confirmPassword}
@@ -252,7 +299,6 @@ export default function UserRegister() {
               </>
             )}
 
-            {/* -------- STEP 2 -------- */}
             {step === 2 && (
               <>
                 <ReadOnly value={form.name} label="Name" />
@@ -268,6 +314,20 @@ export default function UserRegister() {
                   placeholder="- - - - - -"
                   className="w-full text-center tracking-widest text-xl py-3 bg-white/10 border border-white/20 rounded-lg"
                 />
+                <div className="flex justify-between items-center text-sm mt-2">
+                  <span className="text-white/50">
+                    Didn’t receive OTP?
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={handleResendOtp}
+                    disabled={resendTimer > 0}
+                    className="text-blue-400 hover:text-blue-300 disabled:text-white/30 disabled:cursor-not-allowed"
+                  >
+                    {resendTimer > 0 ? `Resend in ${resendTimer}s` : "Resend OTP"}
+                  </button>
+                </div>
               </>
             )}
 
@@ -293,7 +353,6 @@ export default function UserRegister() {
   );
 }
 
-/* ---------------- SMALL COMPONENTS ---------------- */
 
 function Input({ icon: Icon, ...props }) {
   return (

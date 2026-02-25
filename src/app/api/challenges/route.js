@@ -31,10 +31,7 @@ export async function GET(req) {
     }
     await connectDB();
 
-    const user = await User.findById(decoded.userId).select("team role").lean();
-
-    console.log(user);
-    
+    const user = await User.findById(decoded.userId).select("team role").lean();    
 
     if (user.role === "sudo") {
       return new Response(

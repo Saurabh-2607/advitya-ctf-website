@@ -5,7 +5,6 @@ const GLOBAL_IO_KEY = "__CTF_SOCKET_IO__";
 const GLOBAL_IO_INITED = "__CTF_SOCKET_IO_INITED__";
 
 export function initSocket(server) {
-  // If io exists AND listeners are already attached, return it
   if (global[GLOBAL_IO_KEY] && global[GLOBAL_IO_INITED]) {
     return global[GLOBAL_IO_KEY];
   }
@@ -52,12 +51,10 @@ export function initSocket(server) {
       if (role === "sudo") socket.join("admins");
 
       socket.once("disconnect", () => {
-        // no-op, ensures listener doesn’t stack
         console.log(`🔴 socket disconnected | ${name}`);
       });
     });
 
-    // Cleanup on process exit
     const cleanup = () => {
       io.removeAllListeners();
       io.close();
@@ -74,9 +71,6 @@ export function initSocket(server) {
   return io;
 }
 
-/* =====================
-   BROADCAST HELPERS
-   ===================== */
 
 export function broadcast(event) {
   global[GLOBAL_IO_KEY]?.to("global").emit("event", event);

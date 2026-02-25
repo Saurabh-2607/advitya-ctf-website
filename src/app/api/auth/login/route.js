@@ -12,7 +12,11 @@ export async function POST(req) {
   const ip = forwarded ? forwarded.split(",")[0] : "Unknown";
 
   try {
-    if (!loginLimiter(req)) {
+
+    const { email, password } = await req.json();
+    const key = `${ip}:${email}`;
+
+    if (!loginLimiter(key)) {
       return NextResponse.json(
         {
           success: false,
@@ -23,8 +27,6 @@ export async function POST(req) {
     }
 
     await connectDB();
-
-    const { email, password } = await req.json();
 
     if (!email || !password) {
       logger.warn(`⚠️ Login attempt with missing fields →  [IP: ${ip}]`);

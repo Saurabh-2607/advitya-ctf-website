@@ -3,21 +3,41 @@ import connectDB from "@/lib/db";
 import PendingUser from "@/lib/models/PendingUser";
 import User from "@/lib/models/User";
 import jwt from "jsonwebtoken";
+import { rateLimit } from "@/lib/rateLimiter";
 
-/* ---------------- POST /verify-otp ---------------- */
+const verifyLimiter = rateLimit({
+  windowMs: 60_000,
+  max: 10,
+});
 
 export async function POST(req) {
+  const forwarded = req.headers.get("x-forwarded-for");
+  const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
+
   try {
-    await connectDB();
+
 
     const body = await req.json();
     const { email, otp } = body;
+
+    const key = `${ip}:${email}`;
+
+    if (!verifyLimiter(key)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Too many OTP attempts. Please try again later.",
+        },
+        { status: 429 }
+      );
+    }
+
+    await connectDB();
 
     const inputOtp = otp.toString().trim();
 
     console.log("otp", otp);
 
-    /* ---------- BASIC VALIDATION ---------- */
 
     if (!email || !inputOtp) {
       return NextResponse.json(
@@ -33,18 +53,16 @@ export async function POST(req) {
       );
     }
 
-    /* ---------- FIND PENDING USER ---------- */
 
     const pendingUser = await PendingUser.findOne({ email });
 
     if (!pendingUser) {
       return NextResponse.json(
-        { success: false, message: "OTP expired or invalid" },
+        { success: false, message: "Register Again.. " },
         { status: 404 }
       );
     }
 
-    /* ---------- CHECK OTP EXPIRY ---------- */
 
     if (pendingUser.otpExpiresAt < new Date()) {
       await PendingUser.deleteOne({ email });
@@ -54,7 +72,6 @@ export async function POST(req) {
       );
     }
 
-    /* ---------- ATTEMPT LIMIT ---------- */
 
     if (pendingUser.attempts >= 5) {
       await PendingUser.deleteOne({ email });
@@ -67,7 +84,6 @@ export async function POST(req) {
       );
     }
 
-    /* ---------- VERIFY OTP ---------- */
 
     if (pendingUser.otp !== inputOtp) {
       pendingUser.attempts += 1;
@@ -79,7 +95,6 @@ export async function POST(req) {
       );
     }
 
-    /* ---------- CREATE REAL USER ---------- */
 
     const user = await User.create({
       name: pendingUser.name,
@@ -88,19 +103,16 @@ export async function POST(req) {
       role: "user",
     });
 
-    /* ---------- CLEANUP ---------- */
 
     await PendingUser.deleteOne({ email });
 
-    /* ---------- ISSUE JWT ---------- */
 
     const token = jwt.sign(
-      { userId: user._id, name:user.name, role: user.role, team: null },
+      { userId: user._id, name: user.name, role: user.role, team: null },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
-    /* ---------- RESPONSE ---------- */
 
     return NextResponse.json({
       success: true,

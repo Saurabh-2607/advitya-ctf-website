@@ -109,7 +109,7 @@ export default function UserLogin() {
           </div>
 
           <p className="text-white/80">
-            Powered by Null Student Chapter VIT Bhopal
+            Powered by CuberCarnival
           </p>
         </div>
 
@@ -129,7 +129,7 @@ export default function UserLogin() {
                 htmlFor="email"
                 className="block text-sm font-medium text-white mb-2"
               >
-                Email
+                VIT Email
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80 h-5 w-5" />
@@ -221,21 +221,18 @@ export default function UserLogin() {
                 </span>
               </div>
               <div className="mt-6">
-                <ul className=" list-inside space-y-2 text-white/80 text-sm">
+                <ul className=" list-disc space-y-2 text-white/80 text-sm">
                   <li>
                     Keep your Credentials secret. Sharing them may result in disqualification.
                   </li>
-                  {/* <li>
-                    All team members must use the same credentials, including
-                    the team leader.
-                  </li> */}
-                  {/* <li>
-                    Do not attempt to create new accounts. Only credentials
-                    provided by the admin are valid.
-                  </li> */}
-                  {/* <li>
-                    Enter credentials exactly as provided to avoid login issues.
-                  </li> */}
+                  <li>
+                    Participants must not attack, exploit, or disrupt the CTF platform infrastructure, servers, or network.
+                  </li>
+                  <li>
+                    Denial-of-Service (DoS/DDoS), brute-force attacks, automated scanning, or traffic flooding against the platform are strictly prohibited.
+                  </li>
+                  <li>
+                    Organizers reserve the right to disqualify any team for unfair advantage, cheating, or rule violations.                  </li>
                 </ul>
               </div>
             </div>

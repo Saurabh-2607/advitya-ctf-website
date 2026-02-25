@@ -18,6 +18,6 @@ app.prepare().then(() => {
   initSocket(server);
 
   server.listen(3000, () => {
-    console.log("Next + Socket.IO Server started on 3000");
+    console.log("Server now Running...");
   });
 });

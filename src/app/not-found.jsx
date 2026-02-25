@@ -23,8 +23,8 @@ const StrangerThings404 = () => {
   return (
     <>
       <Head>
-        <title>404 - Lost in the Upside Down</title>
-        <meta name="description" content="Page not found - You've entered the Upside Down" />
+        <title>404 - Not Found</title>
+        <meta name="description" content="Page not found" />
       </Head>
 
       <div className="min-h-[80vh] flex items-center justify-center">
@@ -37,7 +37,7 @@ const StrangerThings404 = () => {
 
           {/* Title */}
           <h2 className="text-2xl md:text-3xl font-semibold text-gray-700 dark:text-gray-300 mb-4">
-            LOST IN THE UPSIDE DOWN
+            Bash Error :  No such file or Directory
           </h2>
 
           {/* Simple divider */}
@@ -46,8 +46,6 @@ const StrangerThings404 = () => {
           {/* Message */}
           <div className="space-y-3 text-gray-600 dark:text-gray-400 mb-8">
             <p className="text-lg">The page you're looking for has been consumed by the darkness.</p>
-            <p>Don't panic! Even Eleven gets lost sometimes.</p>
-            <p>The Demogorgon might have taken this page, but we can get you back to safety.</p>
           </div>
 
           {/* Simple home button */}
@@ -55,7 +53,7 @@ const StrangerThings404 = () => {
             href="/"
             className="inline-block px-6 py-3 text-white bg-gray-800 dark:bg-gray-700 hover:bg-gray-700 dark:hover:bg-gray-600 rounded-md transition-colors duration-200 font-medium"
           >
-            ESCAPE TO HOMEPAGE
+            BACK TO HOME
           </Link>
 
           {/* Simple quote */}
