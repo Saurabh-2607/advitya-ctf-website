@@ -24,12 +24,16 @@ const Leaderboard = () => {
       try {
         const authToken = localStorage.getItem("token");
 
-        // -------- Leaderboard fetch --------
+        const headers = {
+          "Content-Type": "application/json",
+        };
+
+        if (authToken) {
+          headers.Authorization = `Bearer ${authToken}`;
+        }
+
         const leaderboardRes = await fetch("/api/leaderboard", {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
-          },
+          headers,
         });
 
         const leaderboardJson = await leaderboardRes.json();
@@ -43,7 +47,6 @@ const Leaderboard = () => {
         setLeaderboardData(leaderboardJson.leaderboard);
         setCurrentUserInfo(leaderboardJson.currentUser || null);
 
-        // -------- Chart fetch ---------
         try {
           const chartRes = await fetch("/api/stats/score-progression");
           const chartJson = await chartRes.json();
@@ -140,36 +143,6 @@ const Leaderboard = () => {
               leaderboardData={leaderboardData}
               currentUserInfo={currentUserInfo}
             />
-
-            {/* <div className="bg-[#191919] rounded-xl p-6 shadow-lg border border-white/20 backdrop-blur-sm">
-              <h2 className="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
-                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                Statistics
-              </h2>
-              <div className="grid grid-cols-3 gap-6">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-red-400 mb-1">
-                    {leaderboardData.length}
-                  </div>
-                  <div className="text-sm text-white/50">Participants</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-amber-400 mb-1">
-                    {Math.max(...leaderboardData.map((u) => u.score))}
-                  </div>
-                  <div className="text-sm text-white/50">Highest Score</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-slate-300 mb-1">
-                    {Math.round(
-                      leaderboardData.reduce((sum, u) => sum + u.score, 0) /
-                        leaderboardData.length,
-                    )}
-                  </div>
-                  <div className="text-sm text-white/50">Average</div>
-                </div>
-              </div>
-            </div> */}
           </>
         )}
       </div>

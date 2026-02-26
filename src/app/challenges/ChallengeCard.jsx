@@ -13,7 +13,6 @@ const ChallengeCard = ({ challenge, isSolved, onClick }) => {
           : "border-neutral-800 hover:border-neutral-700"
       }`}
     >
-      {/* Background Grid Pattern (Optional decoration) */}
       <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:16px_16px] opacity-20 pointer-events-none group-hover:opacity-40 transition-opacity"></div>
       
       <div className="relative z-10 mb-4">

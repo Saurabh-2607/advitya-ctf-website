@@ -215,7 +215,7 @@ const Challenges = () => {
 
   if (role === "sudo") {
     return (
-      <div className="min-h-screen bg-[#09090b] flex items-center justify-center relative overflow-hidden">
+      <div className="min-h-[80vh] bg-[#09090b] flex items-center justify-center relative overflow-hidden">
         <div className="relative z-10 text-center p-8 bg-black/40 backdrop-blur-md rounded-2xl border border-white/10">
           <div className="text-white font-bold text-xl mb-2 tracking-widest uppercase">
             Restricted Access
@@ -230,7 +230,7 @@ const Challenges = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#09090b] flex items-center justify-center relative overflow-hidden">
+      <div className="min-h-[80vh] bg-[#09090b] flex items-center justify-center relative overflow-hidden">
         <div className="relative z-10 flex flex-col items-center">
           <div className="w-12 h-12 border-2 border-white/10 border-t-white rounded-full animate-spin mb-4"></div>
           <div className="text-neutral-400 font-mono text-sm tracking-widest uppercase animate-pulse">
@@ -243,9 +243,9 @@ const Challenges = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#09090b] flex items-center justify-center relative overflow-hidden">
+      <div className="min-h-[80vh] bg-[#09090b] flex items-center justify-center relative overflow-hidden">
         <div className="relative z-10 text-center p-8 bg-black/40 backdrop-blur-md rounded-2xl border border-white/10">
-          <div className="text-white font-bold text-xl mb-2 tracking-widest uppercase">System Error</div>
+          <div className="text-white font-bold text-xl mb-2 tracking-widest uppercase">System Message</div>
           <div className="text-neutral-400 font-mono text-sm">{error}</div>
         </div>
       </div>

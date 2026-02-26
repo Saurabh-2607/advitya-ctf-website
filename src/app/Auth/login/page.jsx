@@ -157,11 +157,9 @@ export default function UserLogin() {
 
   return (
     <div className="fixed inset-0 w-full h-full grid grid-cols-1 lg:grid-cols-2 bg-[#09090b] text-white overflow-hidden z-[40]">
-      {/* ── LEFT COLUMN (Visuals) ── */}
       <div className="hidden lg:flex relative flex-col justify-center items-center bg-neutral-950 border-white/10 overflow-hidden h-full">
         <MatrixRain />
         
-        {/* Glow effect */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-red-600/10 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="relative z-10 text-center p-12 max-w-lg">

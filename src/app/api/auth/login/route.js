@@ -1,9 +1,9 @@
 import userSchema from "@/lib/models/User";
-import logger from "@/utils/logger";
 import connectDB from "@/lib/db";
 import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
 import { rateLimit } from "@/lib/rateLimiter";
+import { authLogger, errorLogger } from "@/utils/loggers";
 
 const loginLimiter = rateLimit({ windowMs: 60_000, max: 5 });
 
@@ -12,43 +12,55 @@ export async function POST(req) {
   const ip = forwarded ? forwarded.split(",")[0] : "Unknown";
 
   try {
-
     const { email, password } = await req.json();
     const key = `${ip}:${email}`;
 
     if (!loginLimiter(key)) {
+      authLogger.warn(
+        `Login Rate Limit | IP: ${ip} Email: ${email}`
+      );
+
       return NextResponse.json(
         {
           success: false,
           message: "Too many login attempts, try again later.",
         },
-        { status: 429 },
+        { status: 429 }
       );
     }
 
     await connectDB();
 
     if (!email || !password) {
-      logger.warn(`⚠️ Login attempt with missing fields →  [IP: ${ip}]`);
       return NextResponse.json(
-        { success: false, message: "email and Password required" },
-        { status: 400 },
+        { success: false, message: "Email and Password required" },
+        { status: 400 }
       );
     }
 
     const user = await userSchema.findOne({ email }).select("+password");
+
     if (!user) {
+      authLogger.warn(
+        `Login Failed (User Not Found) | IP: ${ip} Email: ${email}`
+      );
+
       return NextResponse.json(
-        { success: false, message: "Invalid Credentials.. Please Try Again" },
-        { status: 400 },
+        { success: false, message: "Invalid Credentials" },
+        { status: 400 }
       );
     }
 
     const isMatch = await user.comparePassword(password);
+
     if (!isMatch) {
+      authLogger.warn(
+        `Login Failed (Wrong Password) | IP: ${ip} UserId: ${user._id} Email: ${email}`
+      );
+
       return NextResponse.json(
-        { success: false, message: "Invalid Credentials.. Please Try Again" },
-        { status: 400 },
+        { success: false, message: "Invalid Credentials" },
+        { status: 400 }
       );
     }
 
@@ -60,22 +72,28 @@ export async function POST(req) {
         team: user.team || null,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" },
+      { expiresIn: "1h" }
+    );
+
+    authLogger.info(
+      `Login Success | IP: ${ip} UserId: ${user._id} Name: ${user.name} Role: ${user.role}`
     );
 
     return NextResponse.json({
       success: true,
-      message: "Login Success..",
-      token: token,
+      message: "Login Success",
+      token,
       user: {
         name: user.name,
         id: user._id,
       },
     });
+
   } catch (err) {
+    errorLogger.error(err.stack || err.message);
     return NextResponse.json(
-      { success: false, message: "Server Error..." },
-      { status: 500 },
+      { success: false, message: "Server Error" },
+      { status: 500 }
     );
   }
 }

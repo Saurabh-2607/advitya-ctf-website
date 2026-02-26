@@ -5,7 +5,18 @@ import User from "@/lib/models/User";
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 
+const CTF_START = new Date(process.env.CTF_START_UTC);
+
 export async function GET(req) {
+  const now = new Date();
+
+  if (now < CTF_START) {
+    return NextResponse.json(
+      { success: false, message: "CTF has not started yet." },
+      { status: 403 }
+    );
+  }
+
   try {
     const authHeader = req.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -31,7 +42,7 @@ export async function GET(req) {
     }
     await connectDB();
 
-    const user = await User.findById(decoded.userId).select("team role").lean();    
+    const user = await User.findById(decoded.userId).select("team role").lean();
 
     if (user.role === "sudo") {
       return new Response(

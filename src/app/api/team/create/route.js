@@ -4,7 +4,19 @@ import connectDB from "@/lib/db";
 import User from "@/lib/models/User";
 import Team from "@/lib/models/Team";
 
+const CTF_START = new Date(process.env.CTF_START_UTC);
+
 export async function POST(req) {
+
+  const now = new Date();
+
+  if (now >= CTF_START) {
+    return NextResponse.json(
+      { success: false, message: "CTF already started. Unable to Create team." },
+      { status: 403 }
+    );
+  }
+
   try {
     const authHeader = req.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -26,7 +38,6 @@ export async function POST(req) {
       );
     }
 
-    /* ---------------- INPUT ---------------- */
 
     const { teamName, password } = await req.json();
 
@@ -47,7 +58,6 @@ export async function POST(req) {
       );
     }
 
-    /* ---------------- DB ---------------- */
 
     await connectDB();
     console.log(decoded);
@@ -85,7 +95,6 @@ export async function POST(req) {
       );
     }
 
-    /* ---------------- CREATE TEAM ---------------- */
 
     const team = await Team.create({
       name: teamName,
