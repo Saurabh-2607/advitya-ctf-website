@@ -21,10 +21,21 @@ const isStrongPassword = (pwd) =>
 const generateOtp = () =>
   Math.floor(100000 + Math.random() * 900000).toString();
 
+const CTF_START = new Date(process.env.CTF_START_UTC);
 
 export async function POST(req) {
   const forwarded = req.headers.get("x-forwarded-for");
   const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
+
+
+  const now = new Date();
+
+  if (now >= CTF_START) {
+    return NextResponse.json(
+      { success: false, message: "Registration is closed." },
+      { status: 403 }
+    );
+  }
 
   try {
     const { name, email, password } = await req.json();
@@ -113,7 +124,7 @@ export async function POST(req) {
 
     await sendOtpEmail(email, otp);
 
-    console.log("OTP sent to:", email , otp);  // FOR TESTING I AM DOING... REMOVE LATER
+    console.log("OTP sent to:", email, otp);  // FOR TESTING I AM DOING... REMOVE LATER
 
     return NextResponse.json(
       { success: true, message: "OTP sent to email" },

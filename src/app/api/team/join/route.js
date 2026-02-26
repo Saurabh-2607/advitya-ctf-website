@@ -4,9 +4,20 @@ import connectDB from "@/lib/db";
 import User from "@/lib/models/User";
 import Team from "@/lib/models/Team";
 
+const CTF_START = new Date(process.env.CTF_START_UTC);
+
 export async function POST(req) {
+
+  const now = new Date();
+
+  if (now >= CTF_START) {
+    return NextResponse.json(
+      { success: false, message: "CTF already started. Unable to join team." },
+      { status: 403 }
+    );
+  }
+
   try {
-    /* ---------------- AUTH ---------------- */
 
     const authHeader = req.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -28,7 +39,6 @@ export async function POST(req) {
       );
     }
 
-    /* ---------------- INPUT ---------------- */
 
     const { teamName, password } = await req.json();
 
@@ -39,7 +49,6 @@ export async function POST(req) {
       );
     }
 
-    /* ---------------- DB ---------------- */
 
     await connectDB();
 
@@ -73,7 +82,6 @@ export async function POST(req) {
       );
     }
 
-    /* ---------------- PASSWORD CHECK ---------------- */
 
     const isMatch = await team.comparePassword(password);
     if (!isMatch) {
@@ -83,7 +91,6 @@ export async function POST(req) {
       );
     }
 
-    /* ---------------- JOIN TEAM ---------------- */
 
     team.members.push(user._id);
     await team.save();
@@ -102,7 +109,6 @@ export async function POST(req) {
       { expiresIn: "1h" }
     );
 
-    /* ---------------- RESPONSE ---------------- */
 
     return NextResponse.json(
       {

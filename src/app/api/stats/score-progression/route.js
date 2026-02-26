@@ -25,11 +25,13 @@ export async function GET() {
 
   const now = new Date();
 
+  const CTF_START = new Date(process.env.CTF_START_UTC);
+
   // FIXME :  NEED TO SET CTF START TIME IN UTC HERE... AI8
 
-  const CTF_START = new Date(
-    now.getTime() - 24 * 60 * 60 * 1000, // placeholder: 24h ago
-  );
+  // const CTF_START = new Date(
+  //   now.getTime() - 24 * 60 * 60 * 1000, // placeholder: 24h ago
+  // );
 
   const GRAPH_START = new Date(
     Math.max(

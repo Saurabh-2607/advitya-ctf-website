@@ -10,10 +10,21 @@ const verifyLimiter = rateLimit({
   max: 10,
 });
 
+const CTF_START = new Date(process.env.CTF_START_UTC);
+
 export async function POST(req) {
   const forwarded = req.headers.get("x-forwarded-for");
   const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
 
+
+  const now = new Date();
+
+  if (now >= CTF_START) {
+    return NextResponse.json(
+      { success: false, message: "Registration is closed." },
+      { status: 403 }
+    );
+  }
   try {
 
 

@@ -11,7 +11,26 @@ import { broadcast } from "@/lib/socket";
 
 const SubmitLimiter = rateLimit({ windowMs: 60_000, max: 5 });
 
+const CTF_START = new Date(process.env.CTF_START_UTC);
+const CTF_END = new Date(process.env.CTF_END_UTC);
+
 export async function POST(req) {
+
+  const now = new Date();
+
+  if (now < CTF_START) {
+    return NextResponse.json(
+      { success: false, message: "CTF has not started yet." },
+      { status: 403 }
+    );
+  }
+
+  if (now > CTF_END) {
+    return NextResponse.json(
+      { success: false, message: "CTF has ended." },
+      { status: 403 }
+    );
+  }
 
   const forwarded = req.headers.get("x-forwarded-for");
   const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
