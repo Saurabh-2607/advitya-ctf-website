@@ -1,0 +1,8 @@
+{"level":"warn","message":"Login Failed (Wrong Password) | IP: ::1 UserId: 69a0183e3e75898e49cc6f2c Email: abu.23bcy10141@vitbhopal.ac.in","timestamp":"2026-02-26 19:57:57"}
+{"level":"warn","message":"Login Failed (Wrong Password) | IP: ::1 UserId: 69a00f34ea7ccbade58f249f Email: umair.23bce10524@vitbhopal.ac.in","timestamp":"2026-02-26 19:58:02"}
+{"level":"warn","message":"Login Failed (Wrong Password) | IP: ::1 UserId: 69a00f34ea7ccbade58f249f Email: umair.23bce10524@vitbhopal.ac.in","timestamp":"2026-02-26 19:58:17"}
+{"level":"warn","message":"Login Failed (Wrong Password) | IP: ::1 UserId: 69a00f34ea7ccbade58f249f Email: umair.23bce10524@vitbhopal.ac.in","timestamp":"2026-02-26 19:58:19"}
+{"level":"info","message":"Login Success | IP: ::1 UserId: 69a00f34ea7ccbade58f249f Name: Umair Malik Role: sudo","timestamp":"2026-02-26 19:58:33"}
+{"level":"info","message":"Login Success | IP: ::1 UserId: 69a016ed3e75898e49cc6ef1 Name: tester3 Role: user","timestamp":"2026-02-26 20:18:29"}
+{"level":"warn","message":"Login Failed (Wrong Password) | IP: ::1 UserId: 69a00f34ea7ccbade58f249f Email: umair.23bce10524@vitbhopal.ac.in","timestamp":"2026-02-26 20:33:23"}
+{"level":"info","message":"Login Success | IP: ::1 UserId: 69a00f34ea7ccbade58f249f Name: Umair Malik Role: sudo","timestamp":"2026-02-26 20:33:44"}

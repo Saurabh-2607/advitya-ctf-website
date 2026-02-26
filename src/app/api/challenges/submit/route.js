@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken";
 import { rateLimit } from "@/lib/rateLimiter";
 import { NextResponse } from "next/server";
 import { broadcast } from "@/lib/socket";
+import { flagLogger, errorLogger } from "@/utils/loggers";
 
 const SubmitLimiter = rateLimit({ windowMs: 60_000, max: 5 });
 
@@ -15,10 +16,13 @@ const CTF_START = new Date(process.env.CTF_START_UTC);
 const CTF_END = new Date(process.env.CTF_END_UTC);
 
 export async function POST(req) {
-
   const now = new Date();
 
+  const forwarded = req.headers.get("x-forwarded-for");
+  const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
+
   if (now < CTF_START) {
+    flagLogger.warn(`Submit Before Start | IP: ${ip}`);
     return NextResponse.json(
       { success: false, message: "CTF has not started yet." },
       { status: 403 }
@@ -26,19 +30,14 @@ export async function POST(req) {
   }
 
   if (now > CTF_END) {
+    flagLogger.warn(`Submit After End | IP: ${ip}`);
     return NextResponse.json(
       { success: false, message: "CTF has ended." },
       { status: 403 }
     );
   }
 
-  const forwarded = req.headers.get("x-forwarded-for");
-  const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
-
-
   try {
-
-
     const { challengeId, flag } = await req.json();
 
     if (!challengeId || !flag) {
@@ -50,6 +49,7 @@ export async function POST(req) {
 
     const authHeader = req.headers.get("authorization");
     if (!authHeader?.startsWith("Bearer ")) {
+      flagLogger.warn(`Unauthorized Submit | IP: ${ip}`);
       return NextResponse.json(
         { success: false, message: "Unauthorized" },
         { status: 401 },
@@ -62,6 +62,7 @@ export async function POST(req) {
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET);
     } catch {
+      flagLogger.warn(`Invalid Token Submit | IP: ${ip}`);
       return NextResponse.json(
         { success: false, message: "Session expired" },
         { status: 401 },
@@ -71,15 +72,22 @@ export async function POST(req) {
     const key = `${ip}:${decoded.userId}:${challengeId}`;
 
     if (!SubmitLimiter(key)) {
+      flagLogger.warn(
+        `Rate Limit | IP: ${ip} User: ${decoded.userId} Challenge: ${challengeId}`
+      );
       return NextResponse.json(
         { success: false, message: "Too many attempts." },
         { status: 429 }
       );
     }
+
     await connectDB();
 
     const user = await User.findById(decoded.userId);
     if (!user || !user.team) {
+      flagLogger.warn(
+        `No Team Submit | IP: ${ip} User: ${decoded.userId}`
+      );
       return NextResponse.json(
         { success: false, message: "Join a team first" },
         { status: 403 },
@@ -92,7 +100,6 @@ export async function POST(req) {
     ]);
 
     if (!team || !challenge) {
-
       return NextResponse.json(
         { success: false, message: "Team or Challenge not found" },
         { status: 404 },
@@ -104,6 +111,9 @@ export async function POST(req) {
       challenge.solvedBy.some((s) => s.team.equals(team._id));
 
     if (teamAlreadySolved) {
+      flagLogger.warn(
+        `Duplicate Solve | IP: ${ip} Team: ${team._id} Challenge: ${challengeId}`
+      );
       return NextResponse.json(
         { success: false, message: "Your team already solved this challenge" },
         { status: 400 },
@@ -112,6 +122,10 @@ export async function POST(req) {
 
     if (flag !== challenge.flag) {
       await new Promise((r) => setTimeout(r, 400));
+
+      flagLogger.warn(
+        `Wrong Flag | IP: ${ip} Team: ${team._id} User: ${user._id} Challenge: ${challengeId}`
+      );
 
       return NextResponse.json(
         { success: false, message: "Incorrect flag" },
@@ -141,6 +155,9 @@ export async function POST(req) {
     await Promise.all([team.save(), challenge.save(), user.save()]);
 
     if (isFirstBlood) {
+      flagLogger.info(
+        `First Blood | Team: ${team.name} User: ${user.name} Challenge: ${challenge.name} IP: ${ip}`
+      );
       broadcast({
         type: "FIRST_BLOOD",
         challenge: challenge.name,
@@ -150,6 +167,9 @@ export async function POST(req) {
         timestamp: Date.now(),
       });
     } else {
+      flagLogger.info(
+        `Solve | Team: ${team.name} User: ${user.name} Challenge: ${challenge.name} IP: ${ip}`
+      );
       broadcast({
         type: "SOLVE",
         message: `Team ${team.name} solved ${challenge.name}`,
@@ -173,7 +193,7 @@ export async function POST(req) {
       );
     }
 
-    console.log("CHALLENGE SUBMIT ERROR:", err);
+    errorLogger.error(err.stack || err.message);
 
     return NextResponse.json(
       { success: false, message: "Internal server error" },
