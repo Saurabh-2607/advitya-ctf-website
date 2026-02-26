@@ -25,6 +25,11 @@ const Challenges = () => {
   const [showNewNormal, setShowNewNormal] = useState(false);
   const [showNewInstance, setShowNewInstance] = useState(false);
 
+  // Filters
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedAuthor, setSelectedAuthor] = useState("All");
+  const [selectedStatus, setSelectedStatus] = useState("All");
+
   /* ---------- auth + initial fetch ---------- */
   useEffect(() => {
     if (!user) {
@@ -214,6 +219,27 @@ const Challenges = () => {
     }
   };
 
+  const getUniqueValues = (key) => {
+    const values = challenges.map((c) => c[key] || "Unknown");
+    return ["All", ...new Set(values)];
+  };
+
+  const categories = getUniqueValues("category");
+  const authors = getUniqueValues("author");
+  const statuses = ["All", "Live", "Hidden"];
+
+  const filteredChallenges = challenges.filter((c) => {
+    const matchCategory =
+      selectedCategory === "All" || (c.category || "Unknown") === selectedCategory;
+    const matchAuthor =
+      selectedAuthor === "All" || (c.author || "Unknown") === selectedAuthor;
+    const matchStatus =
+      selectedStatus === "All" ||
+      (selectedStatus === "Live" ? c.visible : !c.visible);
+
+    return matchCategory && matchAuthor && matchStatus;
+  });
+
   return (
     <div className="space-y-6">
       {/* HEADER */}
@@ -235,9 +261,66 @@ const Challenges = () => {
         </div>
       </div>
 
+      {/* FILTERS */}
+      <div className="flex flex-wrap gap-4 bg-neutral-900/50 p-4 rounded-lg border border-neutral-800">
+        {/* Category Filter */}
+        <div className="space-y-1">
+          <label className="text-xs text-neutral-400 font-medium ml-1">
+            Category
+          </label>
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="w-full bg-neutral-800 text-white text-sm border border-neutral-700 rounded-md p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          >
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Author Filter */}
+        <div className="space-y-1">
+          <label className="text-xs text-neutral-400 font-medium ml-1">
+            Author
+          </label>
+          <select
+            value={selectedAuthor}
+            onChange={(e) => setSelectedAuthor(e.target.value)}
+            className="w-full bg-neutral-800 text-white text-sm border border-neutral-700 rounded-md p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          >
+            {authors.map((auth) => (
+              <option key={auth} value={auth}>
+                {auth}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Status Filter */}
+        <div className="space-y-1">
+          <label className="text-xs text-neutral-400 font-medium ml-1">
+            Visibility
+          </label>
+          <select
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+            className="w-full bg-neutral-800 text-white text-sm border border-neutral-700 rounded-md p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          >
+            {statuses.map((status) => (
+              <option key={status} value={status}>
+                {status}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
       {/* LIST */}
       <GetChallenges
-        challenges={challenges}
+        challenges={filteredChallenges}
         loading={loading}
         togglingId={togglingId}
         deletingId={deletingId}
